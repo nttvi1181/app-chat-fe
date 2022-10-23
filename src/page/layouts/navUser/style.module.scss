@@ -1,0 +1,27 @@
+@import "../../../assets/common/common.scss";
+
+.main {
+  height: 100vh;
+  width: 5%;
+  background-color: #0091ff;
+  @include flexCenter(flex, center, space-between);
+  flex-direction: column;
+}
+.avatar {
+  margin-top: 20px;
+}
+.listIcons {
+  height: 25vh;
+  @include flexCenter(flex, center, space-between);
+  flex-direction: column;
+  margin-bottom: 20px;
+  margin-top: 40px;
+}
+
+.success {
+  border: solid white 3px;
+  border-radius: 3px;
+  height: 33px;
+  width: 33px;
+  @include flexCenter(flex, center, center);
+}

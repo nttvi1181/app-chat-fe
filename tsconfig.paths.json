@@ -1,16 +1,9 @@
 {
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "@*": [
-                "./src/*",
-                "./src/page",
-             
-            ],
-            "@page":[
-                "./src/page"
-            ],
-          
-        }
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@*": ["./src/*", "./src/page"],
+      "@page": ["./src/page"]
     }
+  }
 }
