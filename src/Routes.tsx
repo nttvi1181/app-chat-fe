@@ -9,7 +9,7 @@ function Main() {
   const user = localStorage.getItem("user");
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      {user && <NavUser />}
+      <NavUser />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />

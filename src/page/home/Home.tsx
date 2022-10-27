@@ -4,7 +4,7 @@ import { Tabs, Avatar } from "antd";
 import ImageAvatar from "@components/common/imageAvatar/ImageAvatar";
 
 function Home() {
-  return <div>Home</div>;
+  return <div></div>;
 }
 
 export default Home;
