@@ -1,34 +1,76 @@
 import axios from "axios";
+import { disconnectSocket } from "./socket-io";
+// const baseURL = "https://api-app-chat-be.herokuapp.com/api/v1";
+const baseURL = "http://192.168.0.100:8080/api/v1";
 
-const axiosClient = axios.create({
-  baseURL: "https://api-app-chat-be.herokuapp.com",
+const http = axios.create({
+  method: "post", // default
+  baseURL,
 });
 
-axiosClient.interceptors.request.use(
-  function (config) {
-    console.log({ config });
+http.interceptors.request.use(
+  (config) => {
+    const newConfig = config;
+    const token = window.token || localStorage.getItem("_token");
+    if (
+      token &&
+      token !== "undefined" &&
+      token !== "null" &&
+      newConfig.headers
+    ) {
+      newConfig.headers.Authorization = `Bearer ${token}`;
+    }
 
-    // Do something before request is sent
-    return config;
+    return newConfig;
   },
-  function (error) {
-    // Do something with request error
-    return Promise.reject(error);
+  (error) => Promise.reject(error)
+);
+
+http.interceptors.response.use(
+  (response) => {
+    return response.data;
+  },
+  async (errors) => {
+    const { data } = errors.response ? errors.response : { data: null };
+    if (errors?.response?.status === 401) {
+      const originalRequest = errors.config;
+      if (data.status !== 401) {
+        localStorage.removeItem("_token");
+        localStorage.removeItem("_refresh_token");
+        disconnectSocket();
+        window.location.href = "/login";
+        return Promise.reject(errors);
+      }
+      const refreshToken =
+        window.refreshToken || localStorage.getItem("_refresh_token");
+      if (!refreshToken) {
+        localStorage.removeItem("_token");
+        localStorage.removeItem("_refresh_token");
+        disconnectSocket();
+        window.location.href = "/login";
+        return Promise.reject(errors);
+      }
+      try {
+        const { data: dataRefresh }: any = await http.post(
+          "/user/refresh_token",
+          {},
+          {
+            headers: {
+              refresh_token: `Bearer ${refreshToken}`,
+            },
+          }
+        );
+        localStorage.setItem("_token", dataRefresh.accessToken);
+        localStorage.setItem("_refresh_token", dataRefresh.refreshAccessToken);
+        originalRequest.headers.Authorization = `Bearer ${dataRefresh.accessToken}`;
+        window.location.href = "/";
+        return http(originalRequest); // eslint-disable-line
+      } catch (error) {
+        return Promise.reject(errors);
+      }
+    }
+    return Promise.reject(errors); // eslint-disable-line
   }
 );
 
-// Add a response interceptor
-axiosClient.interceptors.response.use(
-  function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    return response;
-  },
-  function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error);
-  }
-);
-
-export default axiosClient;
+export default http;

@@ -1,5 +1,5 @@
 module.exports = {
-  // ... your existing config
+  parser: "@babel/eslint-parser",
   settings: {
     "import/resolver": {
       alias: {
@@ -7,6 +7,7 @@ module.exports = {
           // And all your import aliases
           ["@components", "./src/components"],
           ["@page", "./src/page"],
+          ["@hooks", "./src/hooks"],
           ["@redux", "./src/redux"],
           ["@assets", "./src/assets"],
           ["@images", "./src/assets/images"],

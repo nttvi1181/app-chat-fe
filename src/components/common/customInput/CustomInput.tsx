@@ -28,6 +28,7 @@ function CustomInput({
         onChange={onChange}
         type={type ? type : "text"}
         placeholder={placeholder}
+        value={value}
       ></InputField>
     </FlexIcon>
   );

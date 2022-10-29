@@ -1,30 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
+import { Avatar, Layout, Popover } from "antd";
 import Styles from "./style.module.scss";
-import { Avatar, Button, Popover } from "antd";
-import ImageAvatar from "@/components/common/imageAvatar/ImageAvatar";
+import ImageAvatar from "../../../components/common/imageAvatar/ImageAvatar";
+
 import { AiOutlineCloud, AiOutlineSetting } from "react-icons/ai";
 import { CgToolbox } from "react-icons/cg";
 import { BiMessageRoundedDetail } from "react-icons/bi";
 import { TiContacts } from "react-icons/ti";
 import { HiOutlineCheck } from "react-icons/hi";
-import Chat from "../chat/Chat";
-import Contact from "../contact/Contact";
-import SettingPopup from "@/components/settingPopup/SettingPopup";
+import SettingPopup from "../../../components/settingPopup/SettingPopup";
+import useUi from "@/hooks/useUi";
 
-function NavUser() {
-  const [chooseItem, setChooseItem] = useState<string>("chat");
-  const renderItem = () => {
-    switch (chooseItem) {
-      case "chat":
-        return <Chat />;
-      case "contact":
-        return <Contact />;
-      default:
-        return <></>;
-    }
-  };
+const { Header, Footer, Sider, Content } = Layout;
+type Props = {};
+
+const Sidebar = (props: Props) => {
+  const { setCurrentPage } = useUi();
+
   return (
-    <>
+    <Sider width={150}>
       <div className={Styles.main}>
         <div className={Styles.avatar}>
           <Avatar size={54} icon={<ImageAvatar />} />
@@ -32,17 +26,13 @@ function NavUser() {
             <BiMessageRoundedDetail
               color="white"
               size={30}
-              onClick={() => {
-                setChooseItem("chat");
-              }}
+              onClick={() => setCurrentPage("CHAT")}
             />
             <TiContacts
               color="white"
               size={30}
               style={{ marginRight: "5px" }}
-              onClick={() => {
-                setChooseItem("contact");
-              }}
+              onClick={() => setCurrentPage("CONTACT")}
             />
             <div className={Styles.success}>
               <HiOutlineCheck color="white" size={23} />
@@ -57,9 +47,8 @@ function NavUser() {
           </Popover>
         </div>
       </div>
-      <div className={Styles.ContainerRight}>{renderItem()}</div>
-    </>
+    </Sider>
   );
-}
+};
 
-export default NavUser;
+export default Sidebar;

@@ -3,11 +3,12 @@ import styled from "styled-components";
 import { AiOutlineUser } from "react-icons/ai";
 import { GrLanguage } from "react-icons/gr";
 import { BiLogOut } from "react-icons/bi";
+import useAuth from "../../hooks/useAuth";
 
 function SettingPopup() {
+  const { onLogout } = useAuth();
   return (
     <Container>
-      {" "}
       <FlexItem>
         <AiOutlineUser />
         <TextAlign>Thông tin tài khoản</TextAlign>
@@ -18,7 +19,7 @@ function SettingPopup() {
       </FlexItem>
       <FlexItem>
         <BiLogOut />
-        <TextAlign>Đăng xuất</TextAlign>
+        <TextAlign onClick={onLogout}>Đăng xuất</TextAlign>
       </FlexItem>
     </Container>
   );
