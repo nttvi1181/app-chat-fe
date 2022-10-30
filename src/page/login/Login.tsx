@@ -82,7 +82,7 @@ function Login() {
           </Tabs>
         </div>
         <div className={Styles.footerNoAccount}>
-          Bạn chưa có tài khoản ? <Link to="/test">Đăng ký ngay</Link>
+          Bạn chưa có tài khoản ? <Link to="/register">Đăng ký ngay</Link>
         </div>
       </div>
     </>
