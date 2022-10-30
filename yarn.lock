@@ -2726,7 +2726,14 @@
   "resolved" "https://registry.npmjs.org/ansi-styles/-/ansi-styles-5.2.0.tgz"
   "version" "5.2.0"
 
-"antd@^4.23.6":
+"antd-img-crop@^4.2.8":
+  "integrity" "sha512-zQSuedKaLC4xAKzwnVYGFSB842ii8LoAwJCX96UDfatZcWddIYXLzirj+icOWFsnHDrWsbNCryUfLbTkeOyJHw=="
+  "resolved" "https://registry.npmjs.org/antd-img-crop/-/antd-img-crop-4.2.8.tgz"
+  "version" "4.2.8"
+  dependencies:
+    "react-easy-crop" "^4.6.1"
+
+"antd@^4.23.6", "antd@>=4.0.0":
   "integrity" "sha512-AYH57cWBDe1ChtbnvG8i9dpKG4WnjE3AG0zIKpXByFNnxsr4saV6/19ihE8/ImSGpohN4E2zTXmo7R5/MyVRKQ=="
   "resolved" "https://registry.npmjs.org/antd/-/antd-4.23.6.tgz"
   "version" "4.23.6"
@@ -2954,13 +2961,13 @@
   "resolved" "https://registry.npmjs.org/at-least-node/-/at-least-node-1.0.0.tgz"
   "version" "1.0.0"
 
-"autoprefixer@^10.4.11":
-  "integrity" "sha512-WrCGV9/b97Pa+jtwf5UGaRjgQIg7OK3D06GnoYoZNcG1Xb8Gt3EfuKjlhh9i/VtT16g6PYjZ69jdJ2g8FxSC4Q=="
-  "resolved" "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.12.tgz"
-  "version" "10.4.12"
+"autoprefixer@^10.4.11", "autoprefixer@^10.4.13":
+  "integrity" "sha512-49vKpMqcZYsJjwotvt4+h/BCjJVnhGwcLpDt5xkcaOG3eLrG/HUYLagrihYsQ+qrIBgIzX1Rw7a6L8I/ZA1Atg=="
+  "resolved" "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.13.tgz"
+  "version" "10.4.13"
   dependencies:
     "browserslist" "^4.21.4"
-    "caniuse-lite" "^1.0.30001407"
+    "caniuse-lite" "^1.0.30001426"
     "fraction.js" "^4.2.0"
     "normalize-range" "^0.1.2"
     "picocolors" "^1.0.0"
@@ -3387,10 +3394,10 @@
     "lodash.memoize" "^4.1.2"
     "lodash.uniq" "^4.5.0"
 
-"caniuse-lite@^1.0.0", "caniuse-lite@^1.0.30001400", "caniuse-lite@^1.0.30001407":
-  "integrity" "sha512-hSesn02u1QacQHhaxl/kNMZwqVG35Sz/8DgvmgedxSH8z9UUpcDYSPYgsj3x5dQNRcNp6BwpSfQfVzYUTm+fog=="
-  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001422.tgz"
-  "version" "1.0.30001422"
+"caniuse-lite@^1.0.0", "caniuse-lite@^1.0.30001400", "caniuse-lite@^1.0.30001426":
+  "integrity" "sha512-lfXQ73oB9c8DP5Suxaszm+Ta2sr/4tf8+381GkIm1MLj/YdLf+rEDyDSRCzeltuyTVGm+/s18gdZ0q+Wmp8VsQ=="
+  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001427.tgz"
+  "version" "1.0.30001427"
 
 "case-sensitive-paths-webpack-plugin@^2.4.0":
   "integrity" "sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw=="
@@ -7357,6 +7364,11 @@
   "resolved" "https://registry.npmjs.org/normalize-url/-/normalize-url-6.1.0.tgz"
   "version" "6.1.0"
 
+"normalize-wheel@^1.0.1":
+  "integrity" "sha512-1OnlAPZ3zgrk8B91HyRj+eVv+kS5u+Z0SCsak6Xil/kmgEia50ga7zfkumayonZrImffAxPU/5WcyGhzetHNPA=="
+  "resolved" "https://registry.npmjs.org/normalize-wheel/-/normalize-wheel-1.0.1.tgz"
+  "version" "1.0.1"
+
 "npm-run-path@^4.0.1":
   "integrity" "sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw=="
   "resolved" "https://registry.npmjs.org/npm-run-path/-/npm-run-path-4.0.1.tgz"
@@ -8266,7 +8278,7 @@
   "resolved" "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz"
   "version" "4.2.0"
 
-"postcss@^7.0.0 || ^8.0.1", "postcss@^8", "postcss@^8.0.0", "postcss@^8.0.3", "postcss@^8.0.9", "postcss@^8.1.0", "postcss@^8.1.4", "postcss@^8.2", "postcss@^8.2.14", "postcss@^8.2.15", "postcss@^8.2.2", "postcss@^8.3", "postcss@^8.3.3", "postcss@^8.3.5", "postcss@^8.4", "postcss@^8.4.17", "postcss@^8.4.4", "postcss@^8.4.6", "postcss@^8.4.7", "postcss@>= 8", "postcss@>=8", "postcss@>=8.0.9":
+"postcss@^7.0.0 || ^8.0.1", "postcss@^8", "postcss@^8.0.0", "postcss@^8.0.3", "postcss@^8.0.9", "postcss@^8.1.0", "postcss@^8.1.4", "postcss@^8.2", "postcss@^8.2.14", "postcss@^8.2.15", "postcss@^8.2.2", "postcss@^8.3", "postcss@^8.3.3", "postcss@^8.3.5", "postcss@^8.4", "postcss@^8.4.17", "postcss@^8.4.18", "postcss@^8.4.4", "postcss@^8.4.6", "postcss@^8.4.7", "postcss@>= 8", "postcss@>=8", "postcss@>=8.0.9":
   "integrity" "sha512-Wi8mWhncLJm11GATDaQKobXSNEYGUHeQLiQqDFG1qQ5UTDPTEvKw0Xt5NsTpktGTwLps3ByrWsBrG0rB8YQ9oA=="
   "resolved" "https://registry.npmjs.org/postcss/-/postcss-8.4.18.tgz"
   "version" "8.4.18"
@@ -8879,13 +8891,21 @@
     "strip-ansi" "^6.0.1"
     "text-table" "^0.2.0"
 
-"react-dom@*", "react-dom@^16.0.0 || ^17.0.0 || ^18.0.0", "react-dom@^16.8 || ^17.0 || ^18.0", "react-dom@^18.0.0", "react-dom@^18.2.0", "react-dom@>= 16.8.0", "react-dom@>=16", "react-dom@>=16.0.0", "react-dom@>=16.11.0", "react-dom@>=16.8", "react-dom@>=16.9.0":
+"react-dom@*", "react-dom@^16.0.0 || ^17.0.0 || ^18.0.0", "react-dom@^16.8 || ^17.0 || ^18.0", "react-dom@^18.0.0", "react-dom@^18.2.0", "react-dom@>= 16.8.0", "react-dom@>=16", "react-dom@>=16.0.0", "react-dom@>=16.11.0", "react-dom@>=16.4.0", "react-dom@>=16.8", "react-dom@>=16.8.0", "react-dom@>=16.9.0":
   "integrity" "sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
   "version" "18.2.0"
   dependencies:
     "loose-envify" "^1.1.0"
     "scheduler" "^0.23.0"
+
+"react-easy-crop@^4.6.1":
+  "integrity" "sha512-/3Y7fScuNosFyKGVEotI6Jef1s4nSZLeeeMM38ubexWHRhyvZJAsmqoXoEj5WPvmM6/Ugy32SymJQwVa4t3S9w=="
+  "resolved" "https://registry.npmjs.org/react-easy-crop/-/react-easy-crop-4.6.1.tgz"
+  "version" "4.6.1"
+  dependencies:
+    "normalize-wheel" "^1.0.1"
+    "tslib" "2.0.1"
 
 "react-error-overlay@^6.0.11":
   "integrity" "sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg=="
@@ -9034,7 +9054,7 @@
   dependencies:
     "clsx" "^1.1.1"
 
-"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", "react@^18.0.0", "react@^18.2.0", "react@>= 16", "react@>= 16.8.0", "react@>=16", "react@>=16.0.0", "react@>=16.11.0", "react@>=16.8", "react@>=16.8.0", "react@>=16.9.0":
+"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", "react@^18.0.0", "react@^18.2.0", "react@>= 16", "react@>= 16.8.0", "react@>=16", "react@>=16.0.0", "react@>=16.11.0", "react@>=16.4.0", "react@>=16.8", "react@>=16.8.0", "react@>=16.9.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   "version" "18.2.0"
@@ -10145,10 +10165,10 @@
   "resolved" "https://registry.npmjs.org/symbol-tree/-/symbol-tree-3.2.4.tgz"
   "version" "3.2.4"
 
-"tailwindcss@^3.0.2":
-  "integrity" "sha512-ARh/W0uH5UlWIC2nn02V0+5fyF0k6qZliyt4QYic2upOhPUE/Spu1EURNc9txJ3+4j8OEmdigqfDpw4d2tA4vA=="
-  "resolved" "https://registry.npmjs.org/tailwindcss/-/tailwindcss-3.2.0.tgz"
-  "version" "3.2.0"
+"tailwindcss@^3.0.2", "tailwindcss@^3.2.1":
+  "integrity" "sha512-Uw+GVSxp5CM48krnjHObqoOwlCt5Qo6nw1jlCRwfGy68dSYb/LwS9ZFidYGRiM+w6rMawkZiu1mEMAsHYAfoLg=="
+  "resolved" "https://registry.npmjs.org/tailwindcss/-/tailwindcss-3.2.1.tgz"
+  "version" "3.2.1"
   dependencies:
     "arg" "^5.0.2"
     "chokidar" "^3.5.3"
@@ -10160,6 +10180,7 @@
     "glob-parent" "^6.0.2"
     "is-glob" "^4.0.3"
     "lilconfig" "^2.0.6"
+    "micromatch" "^4.0.5"
     "normalize-path" "^3.0.0"
     "object-hash" "^3.0.0"
     "picocolors" "^1.0.0"
@@ -10387,6 +10408,11 @@
   "integrity" "sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ=="
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz"
   "version" "2.4.0"
+
+"tslib@2.0.1":
+  "integrity" "sha512-SgIkNheinmEBgx1IUNirK0TUD4X9yjjBRTqqjggWCU3pUEqIk3/Uwl3yRixYKT6WjQuGiwDv4NomL3wqRCj+CQ=="
+  "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.0.1.tgz"
+  "version" "2.0.1"
 
 "tsutils@^3.21.0":
   "integrity" "sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA=="

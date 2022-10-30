@@ -10,7 +10,7 @@ const useProfile = () => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(currentUserSelector);
 
-  const setCurrentUser = (user: Profile) => {
+  const setCurrentUser = (user: Profile | null) => {
     dispatch(setCurrentUserAction(user));
   };
 

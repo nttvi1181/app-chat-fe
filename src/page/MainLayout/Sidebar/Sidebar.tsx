@@ -10,18 +10,29 @@ import { TiContacts } from "react-icons/ti";
 import { HiOutlineCheck } from "react-icons/hi";
 import SettingPopup from "../../../components/settingPopup/SettingPopup";
 import useUi from "@/hooks/useUi";
+import useProfile from "@/hooks/useProfile";
 
 const { Header, Footer, Sider, Content } = Layout;
 type Props = {};
 
 const Sidebar = (props: Props) => {
-  const { setCurrentPage } = useUi();
+  const { setCurrentPage, setCurrentViewProfile } = useUi();
+  const { currentUser } = useProfile();
+
+  const onClickAvatar = () => {
+    setCurrentViewProfile(currentUser);
+  };
 
   return (
-    <Sider width={150}>
+    <Sider width={100}>
       <div className={Styles.main}>
         <div className={Styles.avatar}>
-          <Avatar size={54} icon={<ImageAvatar />} />
+          <Avatar
+            size={54}
+            src={currentUser?.avatar_url || "/avatar-default.png"}
+            className="cursor-pointer"
+            onClick={onClickAvatar}
+          />
           <div className={Styles.listIcons}>
             <BiMessageRoundedDetail
               color="white"

@@ -9,7 +9,13 @@ type Props = {};
 const ChatContainer = (props: Props) => {
   return (
     <Layout style={{ height: "100vh" }}>
-      <Sider width={300} style={{ backgroundColor: "#fff" }}>
+      <Sider
+        width={350}
+        style={{
+          backgroundColor: "#fff",
+          boxShadow: "0 0 4px rgba(0, 0, 0, 0.2)",
+        }}
+      >
         <ConersationsContainer />
       </Sider>
       <Content>
@@ -19,4 +25,4 @@ const ChatContainer = (props: Props) => {
   );
 };
 
-export default ChatContainer;
+export default React.memo(ChatContainer);

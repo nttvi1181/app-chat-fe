@@ -18,8 +18,13 @@ const Socket = (props: Props) => {
       console.log("new message", data);
     });
 
+    socket.on("CLIENT_SEND_MESSAGE_ERROR", (data: any) => {
+      console.log("send message error ==>", data);
+    });
+
     return () => {
       socket.off("SERVER_SEND_NEW_MESSAGE");
+      socket.off("CLIENT_SEND_MESSAGE_ERROR");
     };
   }, [currentUser?._id]);
 

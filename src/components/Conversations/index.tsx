@@ -9,7 +9,10 @@ const Conversations = (props: Props) => {
   return (
     <div className={Styles.main}>
       <SearchUserChat />
-      <ConversationItem />
+      <div>
+        <ConversationItem key="1" id={"1"} seens={6}/>
+        <ConversationItem key="2" id={"2"} seens={4} />
+      </div>
     </div>
   );
 };
