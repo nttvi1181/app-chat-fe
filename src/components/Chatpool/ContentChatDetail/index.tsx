@@ -90,7 +90,7 @@ const ContentChatDetail = (props: Props) => {
         scrollThreshold={300}
       >
         {Object.values(list_messages)?.map((_: any, index: number) => (
-          <div style={{...style, backgroundColor: _.is_sent? "green": "red"}} key={index}>
+          <div style={{...style, backgroundColor: _._id? "green": "red"}} key={index}>
             {_.content}
           </div>
         ))}

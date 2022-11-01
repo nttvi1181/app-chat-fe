@@ -5,12 +5,15 @@ import { Avatar, Tooltip } from "antd";
 import clsx from "clsx";
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 import AvatarGroupCustom from "@/components/common/AvatarGroupConversation";
+import useProfile from "@/hooks/useProfile";
 type Props = {
-  id: string;
   seens: number;
+  item: any;
 };
 
-const ConversationItem = ({ seens, id }: Props) => {
+const ConversationItem = ({ seens, item }: Props) => {
+  const { currentUser } = useProfile();
+
   useEffect(() => {
     const containerItems: NodeListOf<HTMLDivElement> =
       document.querySelectorAll(
@@ -31,24 +34,58 @@ const ConversationItem = ({ seens, id }: Props) => {
       ) as HTMLDivElement;
       containerContent.style.maxWidth = `calc(100% - ${totalSubWidth}px)`;
     });
-  }, [id, seens]);
+  }, [item._id, seens]);
+
+  const getNameConversation = () => {
+    if (item?.display_name) return item?.display_name;
+    return item?.members
+      ?.filter((member: any) => member._id !== currentUser?._id)
+      ?.map((member: any) => member?.username)
+      ?.join(", ");
+  };
+
+  const getAvatarConversation = () => {
+    if (item?.avatar_url) return item?.avatar_url;
+    return item?.members
+      ?.filter((member: any) => member._id !== currentUser?._id)
+      ?.map((member: any) => member?.avatar_url);
+  };
+
+  const getContentLastMessage = () => {
+    const { last_message } = item;
+    if (!last_message) return "";
+    switch (last_message.type) {
+      case "TEXT":
+        if (last_message.sender_id._id === currentUser?._id) {
+          return `Bạn: ${last_message.content}`;
+        }
+        return `${last_message.sender_id.username}: ${last_message.content}`;
+    }
+  };
 
   return (
     <div className={clsx(Styles.listItem, "container-item")}>
       <div className="pr-2 flex-shrink-0 container-avatar">
-        {/* <Avatar src={Avatarimg} size={48}>
-          user
-        </Avatar> */}
-        <AvatarGroupCustom avatar1="" avatar2="" />
+        {getAvatarConversation()?.length >= 2 ? (
+          <AvatarGroupCustom
+            avatar1={getAvatarConversation()?.[0] || "/avatar-default.png"}
+            avatar2={getAvatarConversation()?.[1] || "/avatar-default.png"}
+          />
+        ) : (
+          <Avatar
+            src={getAvatarConversation()?.[0] || "/avatar-default.png"}
+            size={48}
+          ></Avatar>
+        )}
       </div>
       <div className="flex-1 container-content">
         <div>
-          <span className={Styles.nameChat}>
-            Việt, Hiếu, Ngọc, Tuyên, Thoại, Vũ
-          </span>
+          <span className={Styles.nameChat}>{getNameConversation()}</span>
         </div>
         <div className="flex flex-nowrap">
-          <span className={clsx(Styles.textChat)}>Bạn:server</span>
+          <span className={clsx(Styles.textChat)}>
+            {getContentLastMessage()}
+          </span>
           <span className={clsx(Styles.textChat, "relative bottom-1 pl-1")}>
             .
           </span>
@@ -62,7 +99,7 @@ const ConversationItem = ({ seens, id }: Props) => {
         )}
       >
         <Avatar.Group size="small">
-          {Array.from({ length: seens }).map((_, index) => (
+          {Array.from({ length: 3 }).map((_, index) => (
             <Avatar
               key={index}
               src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"

@@ -3,6 +3,8 @@ import useProfile from "../../../hooks/useProfile";
 import connectSocket from "../../../services/socket-io";
 import React, { useEffect } from "react";
 import useChatDetail from "@/hooks/useChatDetail";
+import { ConversationService } from "@/services/conversation.service";
+import useConversations from "@/hooks/useConversations";
 
 type Props = {};
 
@@ -10,9 +12,21 @@ const Socket = (props: Props) => {
   const { currentUser } = useProfile();
   const { conversation_info, pushNewMessage, updateNewMessage } =
     useChatDetail();
+  const { setConversations } = useConversations();
+
+  const handleGetConversations = async () => {
+    try {
+      ConversationService.getAllConversations().then(({ data }) => {
+        setConversations(data);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (!currentUser?._id) return;
+    handleGetConversations();
     const socket = connectSocket();
     if (!socket) return;
     socket.emit("JOIN_APP", { user_id: currentUser._id });
@@ -28,7 +42,7 @@ const Socket = (props: Props) => {
           pushNewMessage(data);
         }
       }
-      console.log("new message", data);
+      handleGetConversations();
     });
 
     socket.on("CLIENT_SEND_MESSAGE_ERROR", (data: any) => {

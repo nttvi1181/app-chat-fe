@@ -1,4 +1,5 @@
 import SearchUserChat from "@/components/searchUserChat/SearchUserChat";
+import useConversations from "@/hooks/useConversations";
 import React from "react";
 import ConversationItem from "./ConversationItem";
 import Styles from "./style.module.scss";
@@ -6,12 +7,15 @@ import Styles from "./style.module.scss";
 type Props = {};
 
 const Conversations = (props: Props) => {
+  const { conversations } = useConversations();
+
   return (
     <div className={Styles.main}>
       <SearchUserChat />
       <div>
-        <ConversationItem key="1" id={"1"} seens={6}/>
-        <ConversationItem key="2" id={"2"} seens={4} />
+        {conversations?.map((item, index) => (
+          <ConversationItem key={index} item={item} seens={6} />
+        ))}
       </div>
     </div>
   );

@@ -8,11 +8,13 @@ import {
 import userReducer from "./slices/userSlice";
 import uiReducer from "./slices/uiSlice";
 import chatReducer from "./slices/chatSlice";
+import conversationReducer from "./slices/conversationSlice";
 
 const rootReducer = combineReducers({
   chat: chatReducer,
   user: userReducer,
   ui: uiReducer,
+  conversation: conversationReducer,
 });
 
 export function makeStore() {
