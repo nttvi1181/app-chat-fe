@@ -13,12 +13,12 @@ type Props = {};
 const InputChat = (props: Props) => {
   //   const { setListMessages } = useChatDetail();
   const { sendNewMessage } = SocketService();
-  const { conversation_info } = useChatDetail();
+  const { conversation_info, pushNewMessage } = useChatDetail();
   const { currentUser } = useProfile();
 
   const [valueInputText, setValueText] = useState("");
   const handleSendMessage = () => {
-    sendNewMessage({
+    const data = {
       message_id: new Date().getTime().toString(),
       content: valueInputText,
       conversation_id: conversation_info.conversation_id,
@@ -26,7 +26,9 @@ const InputChat = (props: Props) => {
       recive_id: conversation_info.conversation_members,
       type: "TEXT",
       is_check_conversation: true,
-    });
+    };
+    pushNewMessage(data);
+    sendNewMessage(data);
   };
 
   return (

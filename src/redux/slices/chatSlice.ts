@@ -10,7 +10,7 @@ const initialState: {
     conversation_avatar: Array<string> | null;
     conversation_members: Array<any>;
   };
-  list_messages: Array<any>;
+  list_messages: {};
 } = {
   conversation_info: {
     conversation_id: null,
@@ -19,7 +19,7 @@ const initialState: {
     conversation_avatar: null,
     conversation_members: [],
   },
-  list_messages: [],
+  list_messages: {},
 };
 
 export const chatSlice = createSlice({
@@ -30,7 +30,27 @@ export const chatSlice = createSlice({
       state.conversation_info = payload;
     },
     setListMessages: (state, { payload }) => {
-      state.list_messages = payload;
+      const newListMessages: any = {};
+      payload.forEach((message: any) => {
+        newListMessages[message.message_id] = message;
+      });
+      state.list_messages = newListMessages;
+    },
+    pushNewMessage: (state, { payload }) => {
+      const newListMessages: any = {};
+      newListMessages[payload.message_id] = payload;
+      Object.values(state.list_messages).forEach((message: any) => {
+        newListMessages[message.message_id] = message;
+      });
+      state.list_messages = newListMessages;
+    },
+    updateNewMessage: (state, { payload }) => {
+      const newListMessages: any = {};
+      Object.values(state.list_messages).forEach((message: any) => {
+        newListMessages[message.message_id] = message;
+      });
+      newListMessages[payload.message_id] = payload;
+      state.list_messages = newListMessages;
     },
     setChatDetailInfo: (state, { payload }) => {
       state = { ...payload };
@@ -62,6 +82,8 @@ export const {
   setListMessages,
   setChatDetailInfo,
   resetChatDetail,
+  pushNewMessage,
+  updateNewMessage,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

@@ -8,7 +8,6 @@ const { Content, Header, Footer } = Layout;
 type Props = {};
 
 const Chatpool = (props: Props) => {
-  const { list_messages } = useChatDetail();
   return (
     <Layout style={{ height: "100vh" }}>
       <Header style={style.header}>

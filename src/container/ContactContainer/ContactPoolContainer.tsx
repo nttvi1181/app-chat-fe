@@ -4,7 +4,7 @@ import React from "react";
 type Props = {};
 
 const ChatPoolContainer = (props: Props) => {
-  return <Chatpool />;
+  return <div></div>;
 };
 
 export default ChatPoolContainer;

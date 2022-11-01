@@ -8,6 +8,8 @@ import {
   setListMessages as setListMessagesAction,
   setConversationInfo as setConversationInfoAction,
   resetChatDetail as resetChatDetailAction,
+  pushNewMessage as pushNewMessageAction,
+  updateNewMessage as updateNewMessageAction,
 } from "../redux/slices/chatSlice";
 
 const useChatDetail = () => {
@@ -20,12 +22,20 @@ const useChatDetail = () => {
     dispatch(setChatDetailInfoAction(data));
   };
 
-  const setListMessages = (data: any) => {
+  const setListMessages = (data: Array<any>) => {
     dispatch(setListMessagesAction(data));
   };
 
   const setConversationInfo = (data: any) => {
     dispatch(setConversationInfoAction(data));
+  };
+
+  const pushNewMessage = (data: any) => {
+    dispatch(pushNewMessageAction(data));
+  };
+
+  const updateNewMessage = (data: any) => {
+    dispatch(updateNewMessageAction(data));
   };
 
   const resetChatDetail = () => {
@@ -37,6 +47,8 @@ const useChatDetail = () => {
     setListMessages,
     setChatDetailInfo,
     resetChatDetail,
+    pushNewMessage,
+    updateNewMessage,
     chat_detail_info,
     conversation_info,
     list_messages,

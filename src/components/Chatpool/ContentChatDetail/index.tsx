@@ -1,3 +1,5 @@
+import useChatDetail from "@/hooks/useChatDetail";
+import { MessageService } from "@/services/message.service";
 import { Spin } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -11,23 +13,57 @@ const style = {
   padding: 8,
 };
 const ContentChatDetail = (props: Props) => {
-  const messagesEndRef = useRef<any>();
-  const [state, setState] = useState({ items: Array.from({ length: 40 }) });
-
+  const { list_messages, setListMessages, conversation_info } = useChatDetail();
+  const [hasMore, setHasMore] = useState(false);
+  const [params, setParams] = useState({
+    skip: 0,
+    limit: 20,
+  });
   const scrollToBottom = () => {
     const objDiv = document.getElementById("scrollableDiv") as HTMLElement;
     if (objDiv) {
-      objDiv.scrollTop = objDiv.scrollHeight;
+      objDiv.scrollTo({ top: objDiv.scrollHeight, behavior: "smooth" });
+    }
+  };
+
+  const handleGetMessage = async () => {
+    if (!conversation_info.conversation_id) return;
+    try {
+      const { data } = await MessageService.getByConversationId(
+        conversation_info.conversation_id,
+        params.skip,
+        params.limit
+      );
+      setHasMore(!!data?.length);
+      // check có phải loadmore hay k => nếu loadmore push => nếu không thì unshift
+      if (params.skip === 0) {
+        setListMessages([...data, ...Object.values(list_messages)]);
+      } else {
+        setListMessages([...Object.values(list_messages), ...data]);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const fetchMoreData = () => {
-    setTimeout(() => {
-      setState({
-        items: state.items.concat(Array.from({ length: 20 })),
-      });
-    }, 1500);
+    setParams({
+      skip: Object.values(list_messages).length,
+      limit: 20,
+    });
   };
+
+  useEffect(() => {
+    setListMessages([]);
+    setParams({
+      skip: 0,
+      limit: 20,
+    });
+  }, [conversation_info.conversation_id]);
+
+  useEffect(() => {
+    handleGetMessage();
+  }, [params.skip, params.limit, conversation_info.conversation_id]);
 
   useEffect(() => {
     scrollToBottom();
@@ -44,18 +80,18 @@ const ContentChatDetail = (props: Props) => {
       }}
     >
       <InfiniteScroll
-        dataLength={state.items.length}
+        dataLength={Object.values(list_messages)?.length}
         next={fetchMoreData}
         style={{ display: "flex", flexDirection: "column-reverse" }} //To put endMessage and loader to the top.
         inverse={true} //
-        hasMore={true}
+        hasMore={hasMore}
         loader={<Spin />}
         scrollableTarget="scrollableDiv"
-        initialScrollY={100}
+        scrollThreshold={300}
       >
-        {state.items.map((_, index) => (
-          <div style={style} key={index}>
-            div - #{index}
+        {Object.values(list_messages)?.map((_: any, index: number) => (
+          <div style={{...style, backgroundColor: _.is_sent? "green": "red"}} key={index}>
+            {_.content}
           </div>
         ))}
       </InfiniteScroll>
