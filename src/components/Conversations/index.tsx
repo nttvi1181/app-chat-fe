@@ -14,7 +14,7 @@ const Conversations = (props: Props) => {
       <SearchUserChat />
       <div>
         {conversations?.map((item, index) => (
-          <ConversationItem key={index} item={item} seens={6} />
+          <ConversationItem key={index} item={item}/>
         ))}
       </div>
     </div>

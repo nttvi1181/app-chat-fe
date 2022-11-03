@@ -9,16 +9,21 @@ import useProfile from "@/hooks/useProfile";
 import useChatDetail from "@/hooks/useChatDetail";
 import CustomAvatar from "@/components/common/CustomAvatar";
 type Props = {
-  seens: number;
   item: any;
 };
 
-const ConversationItem = ({ seens, item }: Props) => {
+const ConversationItem = ({ item }: Props) => {
+  const { last_message } = item;
   const { currentUser } = useProfile();
-  const { setChatDetailInfo } = useChatDetail();
+  const last_message_isOwner = last_message.sender_id._id === currentUser?._id;
+  const { setChatDetailInfo, conversation_info } = useChatDetail();
 
   const handleClickConversationItem = (conversation: any) => {
-    if (!currentUser) return;
+    if (
+      !currentUser ||
+      conversation_info?.conversation_id === conversation.conversation_id
+    )
+      return;
     const data = {
       conversation_info: {
         conversation_id: conversation.conversation_id,
@@ -31,7 +36,6 @@ const ConversationItem = ({ seens, item }: Props) => {
       },
       list_messages: [],
     };
-    console.log(data);
     setChatDetailInfo(data);
   };
 
@@ -55,7 +59,7 @@ const ConversationItem = ({ seens, item }: Props) => {
       ) as HTMLDivElement;
       containerContent.style.maxWidth = `calc(100% - ${totalSubWidth}px)`;
     });
-  }, [item._id, seens]);
+  }, [item._id, last_message?.member_seens?.length]);
 
   const getNameConversation = () => {
     if (item?.display_name) return item?.display_name;
@@ -72,16 +76,31 @@ const ConversationItem = ({ seens, item }: Props) => {
       ?.map((member: any) => member?.avatar_url);
   };
 
+  const getDatSeenMessage = () => {
+    if (!last_message) return [];
+    return item?.members?.filter(
+      (member: any) =>
+        member?._id !== currentUser?._id &&
+        last_message?.member_seens?.includes(member?._id)
+    );
+  };
+
   const getContentLastMessage = () => {
-    const { last_message } = item;
     if (!last_message) return "";
     switch (last_message.type) {
       case "TEXT":
-        if (last_message.sender_id._id === currentUser?._id) {
+        if (last_message_isOwner) {
           return `Bạn: ${last_message.content}`;
         }
         return `${last_message.sender_id.username}: ${last_message.content}`;
     }
+  };
+
+  const checkIsReadLastMessage = () => {
+    return (
+      last_message_isOwner ||
+      last_message?.member_seens?.includes(currentUser?._id)
+    );
   };
 
   return (
@@ -104,10 +123,22 @@ const ConversationItem = ({ seens, item }: Props) => {
         onClick={() => handleClickConversationItem(item)}
       >
         <div>
-          <span className={Styles.nameChat}>{getNameConversation()}</span>
+          <span
+            className={clsx(
+              Styles.nameChat,
+              !checkIsReadLastMessage() && "font-semibold"
+            )}
+          >
+            {getNameConversation()}
+          </span>
         </div>
         <div className="flex flex-nowrap">
-          <span className={clsx(Styles.textChat)}>
+          <span
+            className={clsx(
+              Styles.textChat,
+              !checkIsReadLastMessage() && Styles.textNotRead
+            )}
+          >
             {getContentLastMessage()}
           </span>
           <span className={clsx(Styles.textChat, "relative bottom-1 pl-1")}>
@@ -122,15 +153,22 @@ const ConversationItem = ({ seens, item }: Props) => {
           "flex-shrink-0 container-seen"
         )}
       >
-        <Avatar.Group size="small">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <Avatar
-              key={index}
-              src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              size={16}
-            />
-          ))}
-        </Avatar.Group>
+        {!checkIsReadLastMessage() ? (
+          <div
+            style={{
+              width: 12,
+              height: 12,
+              borderRadius: "50%",
+              backgroundColor: "#1876f2",
+            }}
+          ></div>
+        ) : (
+          <Avatar.Group size="small">
+            {getDatSeenMessage()?.map((user: any, index: number) => (
+              <CustomAvatar key={index} src={user?.avatar_url} size={16} />
+            ))}
+          </Avatar.Group>
+        )}
       </div>
     </div>
   );

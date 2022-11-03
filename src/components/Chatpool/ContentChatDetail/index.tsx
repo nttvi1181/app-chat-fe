@@ -6,12 +6,22 @@ import React, { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ChatDetailItem from "./ChatDetailItem";
 import moment from "moment";
+import styled from "styled-components";
+import { SocketService } from "@/services/socket-io";
 
 type Props = {};
 const TIME_MESSAGE_CONSECUTIVE = 60; //seconds
 
+const TimeLineGroupComponent = styled.p`
+  text-align: center;
+  font-weight: 500;
+  font-size: 12px;
+  color: #65676b;
+`;
+
 const ContentChatDetail = (props: Props) => {
   const { currentUser } = useProfile();
+  const { sendSeenMessage } = SocketService();
   const { list_messages, setListMessages, conversation_info } = useChatDetail();
   const [hasMore, setHasMore] = useState(false);
   const [params, setParams] = useState({
@@ -68,6 +78,14 @@ const ContentChatDetail = (props: Props) => {
   useEffect(() => {
     scrollToBottom();
   }, []);
+  const handleSeenMessage = async (message_id: string) => {
+    sendSeenMessage({
+      message_id: message_id,
+      user_id: currentUser?._id,
+      conversation_members: conversation_info.conversation_members,
+    });
+  };
+
   const handleRenderMessage = () => {
     const listData: Array<any> = [];
     let prevItem: any = null;
@@ -78,10 +96,9 @@ const ContentChatDetail = (props: Props) => {
     ArrayLitMessage?.forEach((message: any, index: number) => {
       const isOwner =
         (message?.sender_id?._id ?? message?.sender_id) === currentUser?._id;
-      const datetimeGroupString = moment(message.createdAt).format("YYYYMMDD");
       prevItem = ArrayLitMessage?.[index - 1];
       nextItem = ArrayLitMessage?.[index + 1];
-
+      // check message gui lien tiep
       if (!prevItem) {
         isHeaderMessage = true;
       }
@@ -89,7 +106,6 @@ const ContentChatDetail = (props: Props) => {
       if (!nextItem) {
         isFinalMessage = true;
       }
-console.log(message)
       if (prevItem) {
         if (
           (prevItem?.sender_id?._id ?? prevItem?.sender_id) ===
@@ -119,7 +135,38 @@ console.log(message)
           isFinalMessage = true;
         }
       }
+      // done check message gui lien tiep
 
+      // check time group
+      let TimeLineGroup = "";
+
+      const currentMessageTime = moment(message.createdAt);
+      if (!nextItem) {
+        TimeLineGroup =
+          currentMessageTime.format("HH:mm, DD") +
+          " Tháng" +
+          currentMessageTime.format("MM, YYYY");
+      }
+
+      if (nextItem) {
+        if (
+          currentMessageTime.format("MM-DD-YYYY") !==
+          moment(nextItem.createdAt).format("MM-DD-YYYY")
+        ) {
+          TimeLineGroup = currentMessageTime.format("HH:mm YYYY-MM-DD");
+        } else if (
+          currentMessageTime.diff(moment(nextItem.createdAt), "minutes") > 15
+        ) {
+          TimeLineGroup = currentMessageTime.format("HH:mm");
+        }
+      }
+
+      if (index === 0) {
+        if (!isOwner && !message?.member_seens?.includes(currentUser?._id)) {
+          handleSeenMessage(message?.message_id);
+        }
+      }
+  console.log(message);
       const itemMessage = (
         <ChatDetailItem
           message={message}
@@ -130,9 +177,15 @@ console.log(message)
           type={message?.type}
           isHeaderMessageOfBlock={isHeaderMessage}
           isFinalMessageOfBlock={isFinalMessage}
+          isSent={!!message?._id}
         />
       );
       listData.push(itemMessage);
+      if (TimeLineGroup) {
+        listData.push(
+          <TimeLineGroupComponent>{TimeLineGroup}</TimeLineGroupComponent>
+        );
+      }
     });
     return listData;
   };

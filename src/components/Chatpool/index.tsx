@@ -8,17 +8,37 @@ const { Content, Header, Footer } = Layout;
 type Props = {};
 
 const Chatpool = (props: Props) => {
+  const { conversation_info } = useChatDetail();
+
   return (
     <Layout style={{ height: "100vh" }}>
-      <Header style={style.header}>
-        <HeaderChatDetail />
-      </Header>
-      <Content style={style.content as any}>
-        <ContentChatDetail />
-      </Content>
-      <Footer style={style.footer}>
-        <InputChat />
-      </Footer>
+      {conversation_info?.conversation_id ? (
+        <>
+          <Header style={style.header}>
+            <HeaderChatDetail />
+          </Header>
+          <Content style={style.content as any}>
+            <ContentChatDetail />
+          </Content>
+          <Footer style={style.footer}>
+            <InputChat />
+          </Footer>
+        </>
+      ) : (
+        <div
+          style={{
+            height: "100vh",
+            color: "#65676b",
+            fontSize: 20,
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới
+        </div>
+      )}
     </Layout>
   );
 };

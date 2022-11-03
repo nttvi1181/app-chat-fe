@@ -16,8 +16,6 @@ const TextMessage = ({
   isHeaderMessageOfBlock,
   isFinalMessageOfBlock,
 }: Props) => {
-  console.log("isHeaderMessageOfBlock",isHeaderMessageOfBlock)
-  console.log("isFinalMessageOfBlock",isFinalMessageOfBlock)
   const links = getUrlLinks(content || "");
   let className = "";
   if (isOwner) {

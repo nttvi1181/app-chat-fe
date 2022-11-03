@@ -36,7 +36,7 @@ const Socket = (props: Props) => {
         conversation_info.conversation_id &&
         conversation_info.conversation_id === data.conversation_id
       ) {
-        if (data.sender_id === currentUser._id) {
+        if ((data.sender_id?._id ?? data.sender_id) === currentUser._id) {
           updateNewMessage(data);
         } else {
           pushNewMessage(data);
@@ -49,9 +49,14 @@ const Socket = (props: Props) => {
       console.log("send message error ==>", data);
     });
 
+    socket.on("SERVER_SEND_SEEN_MESSAGE", (data: any) => {
+      handleGetConversations();
+    });
+
     return () => {
       socket.off("SERVER_SEND_NEW_MESSAGE");
       socket.off("CLIENT_SEND_MESSAGE_ERROR");
+      socket.off("SERVER_SEND_SEEN_MESSAGE");
     };
   }, [currentUser?._id, conversation_info.conversation_id]);
 

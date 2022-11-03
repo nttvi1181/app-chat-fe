@@ -26,7 +26,6 @@
 .nameChat {
   display: inline-block;
   font-size: 15px;
-  font-weight: 500;
   color: #050505;
   max-width: 100%;
   white-space: nowrap;
@@ -46,4 +45,9 @@
 .seensImageWraper {
   padding-left: 10px;
   min-width: 26px;
+}
+
+.textNotRead {
+  color: #1876f2;
+  font-weight: 500;
 }

@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import React, {
+  ChangeEvent,
+  ChangeEventHandler,
+  useRef,
+  useState,
+} from "react";
 import { Col, Input, Row } from "antd";
 import { BsEmojiSmile, BsImage } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
@@ -11,13 +16,36 @@ const { TextArea } = Input;
 type Props = {};
 
 const InputChat = (props: Props) => {
+  const inputRef = useRef<any>();
   //   const { setListMessages } = useChatDetail();
   const { sendNewMessage } = SocketService();
   const { conversation_info, list_messages, pushNewMessage } = useChatDetail();
   const { currentUser } = useProfile();
 
   const [valueInputText, setValueText] = useState("");
+
+  const handleChangeValueInput = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setValueText(e.target.value);
+  };
+
+  const onChangeEmojio = (e: any) => {
+    console.log(e);
+  };
+
+  const handleKeyPress = (e: any) => {
+    if ((e.charCode === 13 || e.code === "Enter") && !e.shiftKey) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleSendMessage();
+    }
+  };
+
   const handleSendMessage = () => {
+    if (!valueInputText) return;
     const data = {
       message_id: new Date().getTime().toString(),
       content: valueInputText,
@@ -26,9 +54,18 @@ const InputChat = (props: Props) => {
       recive_id: conversation_info.conversation_members,
       type: "TEXT",
       is_check_conversation: !Object.values(list_messages).length,
+      member_seens: [currentUser?._id],
     };
     pushNewMessage(data);
     sendNewMessage(data);
+    setValueText("");
+    scrollToBottom();
+  };
+  const scrollToBottom = () => {
+    const objDiv = document.getElementById("scrollableDiv") as HTMLElement;
+    if (objDiv) {
+      objDiv.scrollTo({ top: objDiv.scrollHeight, behavior: "smooth" });
+    }
   };
 
   return (
@@ -48,14 +85,18 @@ const InputChat = (props: Props) => {
       </Col>
       <Col span="20">
         <TextArea
+          id="input-message-chat"
+          ref={inputRef}
           style={{
             resize: "none",
             backgroundColor: "#f3f3f5",
             borderRadius: 20,
             border: "none",
           }}
+          value={valueInputText}
           autoSize={{ minRows: 1, maxRows: 4 }}
-          onChange={(e) => setValueText(e.target.value)}
+          onKeyPress={(e) => handleKeyPress(e)}
+          onChange={(e) => handleChangeValueInput(e)}
         />
       </Col>
       <Col
