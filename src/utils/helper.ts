@@ -23,3 +23,40 @@ export const createConversationId = function (arrIds: Array<string>) {
   }
   return sum.toString();
 };
+
+export const characterMaps: any = {
+  "&nbsp;": " ",
+  "\n": " ",
+};
+
+const encodedString = (str: string) => {
+  let newStr = str.trim();
+  Object.entries(characterMaps).forEach((value) => {
+    const regex = new RegExp(`(${value[0]})`, "gim");
+    newStr = newStr.replace(regex, `${value[1] || " "}`);
+  });
+  return newStr;
+};
+export const ORIGIN_TEXT = /(<([^>]+)>)/gi;
+
+export const getUrlLinks = (text: string) => {
+  if (!text) return [];
+  const links: Array<string> = [];
+  const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+  const textOrigin = encodedString(text);
+  textOrigin.split(" ").forEach((content) => {
+    if (urlRegex.test(content)) {
+      const origanalText = content.replace(ORIGIN_TEXT, "");
+      links.push(origanalText);
+    }
+  });
+  return links;
+};
+
+export const setURL = (text: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(urlRegex, (url) => {
+    const urlOrigin = url.replace(ORIGIN_TEXT, '');
+    return `<a href="${urlOrigin}" target="_blank" rel="noopener" class="link_href_post_details">${urlOrigin}</a>`;
+  });
+};

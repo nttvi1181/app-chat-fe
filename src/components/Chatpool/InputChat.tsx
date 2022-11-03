@@ -13,7 +13,7 @@ type Props = {};
 const InputChat = (props: Props) => {
   //   const { setListMessages } = useChatDetail();
   const { sendNewMessage } = SocketService();
-  const { conversation_info, pushNewMessage } = useChatDetail();
+  const { conversation_info, list_messages, pushNewMessage } = useChatDetail();
   const { currentUser } = useProfile();
 
   const [valueInputText, setValueText] = useState("");
@@ -25,7 +25,7 @@ const InputChat = (props: Props) => {
       sender_id: currentUser?._id,
       recive_id: conversation_info.conversation_members,
       type: "TEXT",
-      is_check_conversation: true,
+      is_check_conversation: !Object.values(list_messages).length,
     };
     pushNewMessage(data);
     sendNewMessage(data);

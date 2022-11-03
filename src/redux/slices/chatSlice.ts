@@ -16,7 +16,7 @@ const initialState: {
     conversation_id: null,
     origin_conversation_id: null,
     conversation_name: null,
-    conversation_avatar: null,
+    conversation_avatar: [],
     conversation_members: [],
   },
   list_messages: {},

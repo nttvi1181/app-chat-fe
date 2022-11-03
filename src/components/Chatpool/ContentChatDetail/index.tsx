@@ -1,24 +1,24 @@
 import useChatDetail from "@/hooks/useChatDetail";
 import { MessageService } from "@/services/message.service";
-import { Spin } from "antd";
+import useProfile from "@/hooks/useProfile";
+import { Avatar, Col, Row, Spin } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import ChatDetailItem from "./ChatDetailItem";
+import moment from "moment";
 
 type Props = {};
+const TIME_MESSAGE_CONSECUTIVE = 60; //seconds
 
-const style = {
-  height: 30,
-  border: "1px solid green",
-  margin: 6,
-  padding: 8,
-};
 const ContentChatDetail = (props: Props) => {
+  const { currentUser } = useProfile();
   const { list_messages, setListMessages, conversation_info } = useChatDetail();
   const [hasMore, setHasMore] = useState(false);
   const [params, setParams] = useState({
     skip: 0,
     limit: 20,
   });
+
   const scrollToBottom = () => {
     const objDiv = document.getElementById("scrollableDiv") as HTMLElement;
     if (objDiv) {
@@ -68,6 +68,74 @@ const ContentChatDetail = (props: Props) => {
   useEffect(() => {
     scrollToBottom();
   }, []);
+  const handleRenderMessage = () => {
+    const listData: Array<any> = [];
+    let prevItem: any = null;
+    let nextItem: any = null;
+    let isHeaderMessage = false;
+    let isFinalMessage = false;
+    const ArrayLitMessage = Object.values(list_messages);
+    ArrayLitMessage?.forEach((message: any, index: number) => {
+      const isOwner =
+        (message?.sender_id?._id ?? message?.sender_id) === currentUser?._id;
+      const datetimeGroupString = moment(message.createdAt).format("YYYYMMDD");
+      prevItem = ArrayLitMessage?.[index - 1];
+      nextItem = ArrayLitMessage?.[index + 1];
+
+      if (!prevItem) {
+        isHeaderMessage = true;
+      }
+
+      if (!nextItem) {
+        isFinalMessage = true;
+      }
+console.log(message)
+      if (prevItem) {
+        if (
+          (prevItem?.sender_id?._id ?? prevItem?.sender_id) ===
+            (message?.sender_id?._id ?? message?.sender_id) &&
+          moment(prevItem.createdAt).diff(
+            moment(message.createdAt),
+            "seconds"
+          ) < TIME_MESSAGE_CONSECUTIVE
+        ) {
+          isHeaderMessage = false;
+        } else {
+          isHeaderMessage = true;
+        }
+      }
+
+      if (nextItem) {
+        if (
+          (nextItem?.sender_id?._id ?? nextItem?.sender_id) ===
+            (message?.sender_id?._id ?? message?.sender_id) &&
+          moment(message.createdAt).diff(
+            moment(nextItem.createdAt),
+            "seconds"
+          ) < TIME_MESSAGE_CONSECUTIVE
+        ) {
+          isFinalMessage = false;
+        } else {
+          isFinalMessage = true;
+        }
+      }
+
+      const itemMessage = (
+        <ChatDetailItem
+          message={message}
+          isOwner={isOwner}
+          content={message?.content}
+          username={message?.sender_id?.username}
+          avatar_url={message?.sender_id?.avatar_url}
+          type={message?.type}
+          isHeaderMessageOfBlock={isHeaderMessage}
+          isFinalMessageOfBlock={isFinalMessage}
+        />
+      );
+      listData.push(itemMessage);
+    });
+    return listData;
+  };
 
   return (
     <div
@@ -89,11 +157,7 @@ const ContentChatDetail = (props: Props) => {
         scrollableTarget="scrollableDiv"
         scrollThreshold={300}
       >
-        {Object.values(list_messages)?.map((_: any, index: number) => (
-          <div style={{...style, backgroundColor: _._id? "green": "red"}} key={index}>
-            {_.content}
-          </div>
-        ))}
+        {handleRenderMessage()}
       </InfiniteScroll>
     </div>
   );

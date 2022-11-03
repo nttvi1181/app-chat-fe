@@ -6,6 +6,8 @@ import clsx from "clsx";
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 import AvatarGroupCustom from "@/components/common/AvatarGroupConversation";
 import useProfile from "@/hooks/useProfile";
+import useChatDetail from "@/hooks/useChatDetail";
+import CustomAvatar from "@/components/common/CustomAvatar";
 type Props = {
   seens: number;
   item: any;
@@ -13,6 +15,25 @@ type Props = {
 
 const ConversationItem = ({ seens, item }: Props) => {
   const { currentUser } = useProfile();
+  const { setChatDetailInfo } = useChatDetail();
+
+  const handleClickConversationItem = (conversation: any) => {
+    if (!currentUser) return;
+    const data = {
+      conversation_info: {
+        conversation_id: conversation.conversation_id,
+        origin_conversation_id: conversation?._id,
+        conversation_name: getNameConversation(),
+        conversation_avatar: getAvatarConversation(),
+        conversation_members: conversation.members?.map(
+          (member: any) => member._id
+        ),
+      },
+      list_messages: [],
+    };
+    console.log(data);
+    setChatDetailInfo(data);
+  };
 
   useEffect(() => {
     const containerItems: NodeListOf<HTMLDivElement> =
@@ -65,20 +86,23 @@ const ConversationItem = ({ seens, item }: Props) => {
 
   return (
     <div className={clsx(Styles.listItem, "container-item")}>
-      <div className="pr-2 flex-shrink-0 container-avatar">
+      <div
+        className="pr-2 flex-shrink-0 container-avatar"
+        onClick={() => handleClickConversationItem(item)}
+      >
         {getAvatarConversation()?.length >= 2 ? (
           <AvatarGroupCustom
-            avatar1={getAvatarConversation()?.[0] || "/avatar-default.png"}
-            avatar2={getAvatarConversation()?.[1] || "/avatar-default.png"}
+            avatar1={getAvatarConversation()?.[0]}
+            avatar2={getAvatarConversation()?.[1]}
           />
         ) : (
-          <Avatar
-            src={getAvatarConversation()?.[0] || "/avatar-default.png"}
-            size={48}
-          ></Avatar>
+          <CustomAvatar src={getAvatarConversation()?.[0]} size={48} />
         )}
       </div>
-      <div className="flex-1 container-content">
+      <div
+        className="flex-1 container-content"
+        onClick={() => handleClickConversationItem(item)}
+      >
         <div>
           <span className={Styles.nameChat}>{getNameConversation()}</span>
         </div>

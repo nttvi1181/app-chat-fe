@@ -1,12 +1,13 @@
 import useChatDetail from "@/hooks/useChatDetail";
+import AvatarGroupCustom from "@/components/common/AvatarGroupConversation";
 import { Avatar, Col, Row } from "antd";
 import React from "react";
+import CustomAvatar from "@/components/common/CustomAvatar";
 
 type Props = {};
 
 const HeaderChatDetail = (props: Props) => {
   const { conversation_info } = useChatDetail();
-  console.log("header");
   return (
     <Row
       justify="space-between"
@@ -16,14 +17,19 @@ const HeaderChatDetail = (props: Props) => {
       <Col span={20}>
         <Row>
           <Col className="pr-2">
-            <Avatar
-              size={40}
-              src={
-                conversation_info?.conversation_avatar || "/avatar-default.png"
-              }
-            />
+            {(conversation_info?.conversation_avatar?.length ?? 0) >= 2 ? (
+              <AvatarGroupCustom
+                avatar1={conversation_info?.conversation_avatar?.[0]}
+                avatar2={conversation_info?.conversation_avatar?.[1]}
+              />
+            ) : (
+              <CustomAvatar
+                src={conversation_info?.conversation_avatar?.[0]}
+                size={48}
+              />
+            )}
           </Col>
-          <Col className="flex flex-col justify-center">
+          <Col className="flex flex-col justify-center round">
             <div
               style={{
                 fontSize: 17,

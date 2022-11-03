@@ -8,7 +8,6 @@ type Props = {};
 
 const Index = (props: Props) => {
   const { currentPage } = useUi();
-  console.log("main layout");
   const renderContent = () => {
     switch (currentPage) {
       case "CHAT":
