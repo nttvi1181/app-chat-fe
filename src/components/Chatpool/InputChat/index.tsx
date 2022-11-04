@@ -55,6 +55,7 @@ const InputChat = (props: Props) => {
       type: "TEXT",
       is_check_conversation: !Object.values(list_messages).length,
       member_seens: [currentUser?._id],
+      send_time: new Date().getTime(),
     };
     pushNewMessage(data);
     sendNewMessage(data);
@@ -70,7 +71,7 @@ const InputChat = (props: Props) => {
 
   return (
     <Row>
-      <Col span="2" style={{ alignSelf: "end" }}>
+      <Col style={{ alignSelf: "end", width: 120 }}>
         <Row className="items-center justify-around">
           <Col>
             <IoMdAddCircle className="cursor-pointer" size={20} />
@@ -83,7 +84,7 @@ const InputChat = (props: Props) => {
           </Col>
         </Row>
       </Col>
-      <Col span="20">
+      <Col className="flex-1">
         <TextArea
           id="input-message-chat"
           ref={inputRef}
@@ -99,11 +100,11 @@ const InputChat = (props: Props) => {
           onChange={(e) => handleChangeValueInput(e)}
         />
       </Col>
-      <Col
-        span="2"
-        style={{ alignSelf: "end", height: 24, padding: " 0 12px" }}
-      >
-        <Row className="items-center justify-around">
+      <Col style={{ alignSelf: "end", height: 24, padding: " 0 12px" }}>
+        <Row
+          className="items-center justify-around"
+          style={{ width: 120, padding: "0 12px" }}
+        >
           <Col>
             <BsEmojiSmile className="cursor-pointer" size={20} />
           </Col>

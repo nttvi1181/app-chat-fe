@@ -1,7 +1,22 @@
-import { Avatar, Col, message, Row } from "antd";
-import React from "react";
+import { Avatar, Col, message, Popover, Row } from "antd";
+import React, { useState } from "react";
 import TextMessage from "./TextMessage";
-import { BsCircle, BsCheckCircle, BsCheckCircleFill } from "react-icons/bs";
+import {
+  BsCircle,
+  BsCheckCircle,
+  BsCheckCircleFill,
+  BsEmojiSmile,
+} from "react-icons/bs";
+import { MdDelete } from "react-icons/md";
+import { showConfirm } from "@/utils/message.helper";
+import ReactionMessage from "@/components/common/ReactionMessage";
+import { TYPE_REACTION } from "@utils/enum";
+import useProfile from "@/hooks/useProfile";
+import styles from "./style.module.scss";
+import clsx from "clsx";
+import ClickOutside from "@/components/common/ClickOutside";
+import { SocketService } from "@/services/socket-io";
+import useChatDetail from "@/hooks/useChatDetail";
 type Props = {
   isOwner: boolean;
   username: string;
@@ -25,16 +40,33 @@ const ChatDetailItem = ({
   isSent,
   type,
 }: Props) => {
-  
+  const { sendReactionMessage } = SocketService();
+  const { currentUser } = useProfile();
+  const [isOpentReaction, setIsOpentReaction] = useState(false);
+  const { conversation_info } = useChatDetail();
+
   const renderIconSent = () => {
     if (!isOwner) return null;
-    if (message?.member_seens?.length >= 1)
+    if (message?.member_seens?.length > 1)
       return <BsCheckCircleFill style={{ width: 14 }} />;
     return isSent ? (
       <BsCheckCircle style={{ width: 14 }} />
     ) : (
       <BsCircle style={{ width: 14 }} />
     );
+  };
+
+  const handleDeleteMessage = () => {
+    showConfirm("Tin nhắn này sẽ bị thu hồi với mọi người trong đoạn chat");
+  };
+
+  const handleReaction = (type: TYPE_REACTION) => {
+    sendReactionMessage({
+      message_id: message.message_id,
+      user_id: currentUser?._id,
+      type,
+      conversation_members: conversation_info.conversation_members,
+    });
   };
 
   return (
@@ -60,7 +92,7 @@ const ChatDetailItem = ({
           </Row>
         </Col>
       )}
-      <Col span={24}>
+      <Col span={24} className={styles.contentMessage}>
         <Row
           style={{
             flexDirection: isOwner ? "row-reverse" : "row",
@@ -96,6 +128,44 @@ const ChatDetailItem = ({
               isOwner={isOwner}
               content={content}
             />
+          </Col>
+          <Col
+            className={clsx(
+              !isOpentReaction && styles.actionMessage,
+              "flex items-center ml-2"
+            )}
+          >
+            {isOwner ? (
+              <div className="flex items-center justify-center">
+                <MdDelete
+                  className="cursor-pointer mx-2"
+                  style={{
+                    color: "#65676b",
+                    fontWeight: 700,
+                    display: "block",
+                  }}
+                  size={16}
+                  onClick={handleDeleteMessage}
+                />
+              </div>
+            ) : (
+              <div className="relative">
+                <BsEmojiSmile
+                  className="cursor-pointer mx-2"
+                  style={{ color: "#65676b", fontWeight: 700 }}
+                  size={16}
+                  onClick={() => setIsOpentReaction(true)}
+                />
+                <ClickOutside onClickOutside={() => setIsOpentReaction(false)}>
+                  <div
+                    className={clsx("absolute", !isOpentReaction && "hidden")}
+                    style={{ width: "264px", height: "52px", top: "-52px" }}
+                  >
+                    <ReactionMessage onClick={handleReaction} />
+                  </div>
+                </ClickOutside>
+              </div>
+            )}
           </Col>
         </Row>
       </Col>

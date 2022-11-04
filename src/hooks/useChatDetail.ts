@@ -10,6 +10,7 @@ import {
   resetChatDetail as resetChatDetailAction,
   pushNewMessage as pushNewMessageAction,
   updateNewMessage as updateNewMessageAction,
+  updateMessage as updateMessageAction,
 } from "../redux/slices/chatSlice";
 
 const useChatDetail = () => {
@@ -38,6 +39,10 @@ const useChatDetail = () => {
     dispatch(updateNewMessageAction(data));
   };
 
+  const updateMessage = (data: any) => {
+    dispatch(updateMessageAction(data));
+  };
+
   const resetChatDetail = () => {
     dispatch(resetChatDetailAction());
   };
@@ -49,6 +54,7 @@ const useChatDetail = () => {
     resetChatDetail,
     pushNewMessage,
     updateNewMessage,
+    updateMessage,
     chat_detail_info,
     conversation_info,
     list_messages,

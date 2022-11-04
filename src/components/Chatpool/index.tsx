@@ -50,7 +50,7 @@ const style = {
     borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
     padding: "0px 16px",
   },
-  content: { backgroundColor: "#fff", padding: "0", overflowY: "hidden" },
+  content: { backgroundColor: "#fff", padding: "0 0 20px 0", overflowY: "hidden" },
   footer: { backgroundColor: "#fff", padding: "0 0 8px 0" },
 };
 

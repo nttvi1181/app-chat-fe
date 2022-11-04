@@ -113,7 +113,9 @@ const ContentChatDetail = (props: Props) => {
           moment(prevItem.createdAt).diff(
             moment(message.createdAt),
             "seconds"
-          ) < TIME_MESSAGE_CONSECUTIVE
+          ) < TIME_MESSAGE_CONSECUTIVE &&
+          moment(prevItem.createdAt).format("MM-DD-YYYY") ===
+            moment(message.createdAt).format("MM-DD-YYYY")
         ) {
           isHeaderMessage = false;
         } else {
@@ -128,7 +130,9 @@ const ContentChatDetail = (props: Props) => {
           moment(message.createdAt).diff(
             moment(nextItem.createdAt),
             "seconds"
-          ) < TIME_MESSAGE_CONSECUTIVE
+          ) < TIME_MESSAGE_CONSECUTIVE &&
+          moment(nextItem.createdAt).format("MM-DD-YYYY") ===
+            moment(message.createdAt).format("MM-DD-YYYY")
         ) {
           isFinalMessage = false;
         } else {
@@ -166,9 +170,10 @@ const ContentChatDetail = (props: Props) => {
           handleSeenMessage(message?.message_id);
         }
       }
-  console.log(message);
+
       const itemMessage = (
         <ChatDetailItem
+          key={message._id}
           message={message}
           isOwner={isOwner}
           content={message?.content}

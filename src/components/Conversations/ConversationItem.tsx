@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import Styles from "./style.module.scss";
 import Avatarimg from "../../assets/images/dejong.jpg";
-import { Avatar, Tooltip } from "antd";
+import { Avatar, Dropdown, MenuProps, Popover, Tooltip } from "antd";
 import clsx from "clsx";
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 import AvatarGroupCustom from "@/components/common/AvatarGroupConversation";
 import useProfile from "@/hooks/useProfile";
 import useChatDetail from "@/hooks/useChatDetail";
 import CustomAvatar from "@/components/common/CustomAvatar";
+import { BsThreeDots } from "react-icons/bs";
+import SettingConversation from "./SettingConversation";
 type Props = {
   item: any;
 };
@@ -17,6 +19,7 @@ const ConversationItem = ({ item }: Props) => {
   const { currentUser } = useProfile();
   const last_message_isOwner = last_message.sender_id._id === currentUser?._id;
   const { setChatDetailInfo, conversation_info } = useChatDetail();
+  const isGroupChat = item.members.length > 2;
 
   const handleClickConversationItem = (conversation: any) => {
     if (
@@ -92,7 +95,9 @@ const ConversationItem = ({ item }: Props) => {
         if (last_message_isOwner) {
           return `Bạn: ${last_message.content}`;
         }
-        return `${last_message.sender_id.username}: ${last_message.content}`;
+        return `${isGroupChat ? last_message.sender_id.username + ": " : ""}${
+          last_message.content
+        }`;
     }
   };
 
@@ -103,73 +108,106 @@ const ConversationItem = ({ item }: Props) => {
     );
   };
 
+  const items = [
+    {
+      label: "1st menu item",
+      key: "1",
+    },
+    {
+      label: "2nd menu item",
+      key: "2",
+    },
+    {
+      label: "3rd menu item",
+      key: "3",
+    },
+  ];
+
   return (
-    <div className={clsx(Styles.listItem, "container-item")}>
-      <div
-        className="pr-2 flex-shrink-0 container-avatar"
-        onClick={() => handleClickConversationItem(item)}
-      >
-        {getAvatarConversation()?.length >= 2 ? (
-          <AvatarGroupCustom
-            avatar1={getAvatarConversation()?.[0]}
-            avatar2={getAvatarConversation()?.[1]}
-          />
-        ) : (
-          <CustomAvatar src={getAvatarConversation()?.[0]} size={48} />
-        )}
-      </div>
-      <div
-        className="flex-1 container-content"
-        onClick={() => handleClickConversationItem(item)}
-      >
-        <div>
-          <span
-            className={clsx(
-              Styles.nameChat,
-              !checkIsReadLastMessage() && "font-semibold"
-            )}
-          >
-            {getNameConversation()}
-          </span>
-        </div>
-        <div className="flex flex-nowrap">
-          <span
-            className={clsx(
-              Styles.textChat,
-              !checkIsReadLastMessage() && Styles.textNotRead
-            )}
-          >
-            {getContentLastMessage()}
-          </span>
-          <span className={clsx(Styles.textChat, "relative bottom-1 pl-1")}>
-            .
-          </span>
-          <span className={clsx(Styles.textChat)}>1 giờ</span>
-        </div>
-      </div>
+    <div className={clsx(Styles.itemWraper, "relative")}>
       <div
         className={clsx(
-          Styles.seensImageWraper,
-          "flex-shrink-0 container-seen"
+          Styles.listItem,
+          "container-item",
+          conversation_info.conversation_id === item.conversation_id &&
+            Styles.active
         )}
       >
-        {!checkIsReadLastMessage() ? (
-          <div
-            style={{
-              width: 12,
-              height: 12,
-              borderRadius: "50%",
-              backgroundColor: "#1876f2",
-            }}
-          ></div>
-        ) : (
-          <Avatar.Group size="small">
-            {getDatSeenMessage()?.map((user: any, index: number) => (
-              <CustomAvatar key={index} src={user?.avatar_url} size={16} />
-            ))}
-          </Avatar.Group>
-        )}
+        <div
+          className="pr-2 flex-shrink-0 container-avatar"
+          onClick={() => handleClickConversationItem(item)}
+        >
+          {getAvatarConversation()?.length >= 2 ? (
+            <AvatarGroupCustom
+              avatar1={getAvatarConversation()?.[0]}
+              avatar2={getAvatarConversation()?.[1]}
+            />
+          ) : (
+            <CustomAvatar src={getAvatarConversation()?.[0]} size={48} />
+          )}
+        </div>
+        <div
+          className="flex-1 container-content"
+          onClick={() => handleClickConversationItem(item)}
+        >
+          <div>
+            <span
+              className={clsx(
+                Styles.nameChat,
+                !checkIsReadLastMessage() && "font-semibold"
+              )}
+            >
+              {getNameConversation()}
+            </span>
+          </div>
+          <div className="flex flex-nowrap">
+            <span
+              className={clsx(
+                Styles.textChat,
+                !checkIsReadLastMessage() && Styles.textNotRead
+              )}
+            >
+              {getContentLastMessage()}
+            </span>
+            <span className={clsx(Styles.textChat, "relative bottom-1 pl-1")}>
+              .
+            </span>
+            <span className={clsx(Styles.textChat)}>1 giờ</span>
+          </div>
+        </div>
+        <div
+          className={clsx(
+            Styles.seensImageWraper,
+            "flex-shrink-0 container-seen"
+          )}
+        >
+          {!checkIsReadLastMessage() ? (
+            <div
+              style={{
+                width: 12,
+                height: 12,
+                borderRadius: "50%",
+                backgroundColor: "#1876f2",
+              }}
+            ></div>
+          ) : (
+            <Avatar.Group size="small">
+              {getDatSeenMessage()?.map((user: any, index: number) => (
+                <CustomAvatar key={index} src={user?.avatar_url} size={16} />
+              ))}
+            </Avatar.Group>
+          )}
+        </div>
       </div>
+      <Popover
+        content={<SettingConversation conversation_id={item?.conversation_id} />}
+        placement="rightTop"
+        trigger="click"
+      >
+        <div className={Styles.iconMore}>
+          <BsThreeDots style={{ fontWeight: "bold", fontSize: 22 }} />
+        </div>
+      </Popover>
     </div>
   );
 };

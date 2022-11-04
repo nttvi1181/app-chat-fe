@@ -1,3 +1,4 @@
+
 export const hash = function (str: string, seed = 0) {
   let h1 = 0xdeadbeef ^ seed,
     h2 = 0x41c6ce57 ^ seed;
@@ -56,7 +57,8 @@ export const getUrlLinks = (text: string) => {
 export const setURL = (text: string) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   return text.replace(urlRegex, (url) => {
-    const urlOrigin = url.replace(ORIGIN_TEXT, '');
+    const urlOrigin = url.replace(ORIGIN_TEXT, "");
     return `<a href="${urlOrigin}" target="_blank" rel="noopener" class="link_href_post_details">${urlOrigin}</a>`;
   });
 };
+

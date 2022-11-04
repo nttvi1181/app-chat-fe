@@ -45,12 +45,22 @@ export const chatSlice = createSlice({
       state.list_messages = newListMessages;
     },
     updateNewMessage: (state, { payload }) => {
-      console.log("payload", payload);
       const newListMessages: any = {};
       Object.values(state.list_messages).forEach((message: any) => {
         newListMessages[message.message_id] = message;
       });
       newListMessages[payload.message_id] = payload;
+      state.list_messages = newListMessages;
+    },
+    updateMessage: (state, { payload }) => {
+      const newListMessages: any = {};
+      Object.values(state.list_messages).forEach((message: any) => {
+        newListMessages[message.message_id] = message;
+      });
+      newListMessages[payload.message_id] = {
+        ...newListMessages[payload.message_id],
+        ...payload,
+      };
       state.list_messages = newListMessages;
     },
     setChatDetailInfo: (state, { payload }) => {
@@ -69,6 +79,7 @@ export const chatSlice = createSlice({
         },
         list_messages: [],
       };
+      return state;
     },
   },
 });
@@ -85,6 +96,7 @@ export const {
   resetChatDetail,
   pushNewMessage,
   updateNewMessage,
+  updateMessage,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;
