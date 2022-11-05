@@ -71,7 +71,17 @@ const Socket = (props: Props) => {
     });
 
     socket.on("SERVER_SEND_REACTION_MESSAGE", (data: any) => {
-      console.log("reaction",data);
+      const { reactions, conversation_id, message_id } = data;
+      if (
+        conversation_info.conversation_id &&
+        conversation_info.conversation_id === conversation_id
+      ) {
+        console.log("update reactions", reactions, message_id);
+        updateMessage({
+          reactions: reactions,
+          message_id: message_id,
+        });
+      }
     });
 
     return () => {

@@ -43,7 +43,6 @@ const InputChat = (props: Props) => {
       handleSendMessage();
     }
   };
-
   const handleSendMessage = () => {
     if (!valueInputText) return;
     const data = {

@@ -1,7 +1,7 @@
 import React from "react";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import { getUrlLinks, setURL } from "@/utils/helper";
-import style from "./style.module.scss";
+import style from "../style.module.scss";
 import clsx from "clsx";
 type Props = {
   isOwner: boolean;

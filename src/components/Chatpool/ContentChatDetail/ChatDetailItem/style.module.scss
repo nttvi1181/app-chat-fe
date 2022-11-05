@@ -7,16 +7,6 @@
 
 .contentMessage {
   position: relative;
-}
-
-.contentMessage:hover .actionMessage {
   display: flex;
-}
-
-.actionMessage {
-  display: none;
-}
-
-.reactionWraper {
-  display: none;
+  max-width: 590px;
 }

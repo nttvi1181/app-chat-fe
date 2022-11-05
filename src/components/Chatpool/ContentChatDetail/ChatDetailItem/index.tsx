@@ -10,13 +10,16 @@ import {
 import { MdDelete } from "react-icons/md";
 import { showConfirm } from "@/utils/message.helper";
 import ReactionMessage from "@/components/common/ReactionMessage";
-import { TYPE_REACTION } from "@utils/enum";
+import { TYPE_REACTION } from "@/utils/enum";
 import useProfile from "@/hooks/useProfile";
 import styles from "./style.module.scss";
 import clsx from "clsx";
 import ClickOutside from "@/components/common/ClickOutside";
 import { SocketService } from "@/services/socket-io";
 import useChatDetail from "@/hooks/useChatDetail";
+import RenderReactions from "./renderReaction";
+import styled from "styled-components";
+import CustomAvatar from "@/components/common/CustomAvatar";
 type Props = {
   isOwner: boolean;
   username: string;
@@ -43,7 +46,40 @@ const ChatDetailItem = ({
   const { sendReactionMessage } = SocketService();
   const { currentUser } = useProfile();
   const [isOpentReaction, setIsOpentReaction] = useState(false);
+  const [isOpentActionMessage, setIsOpenActionMessage] = useState(false);
   const { conversation_info } = useChatDetail();
+
+  const handleDeleteMessage = () => {
+    showConfirm("Tin nhắn này sẽ bị thu hồi với mọi người trong đoạn chat");
+  };
+
+  const handleReaction = (type: TYPE_REACTION) => {
+    sendReactionMessage({
+      message_id: message.message_id,
+      conversation_id: conversation_info.conversation_id,
+      user_id: currentUser?._id,
+      type,
+      conversation_members: conversation_info.conversation_members,
+    });
+    setIsOpentReaction(false);
+    setIsOpenActionMessage(false);
+  };
+
+  const handleMoveOverMessage = () => {
+    setIsOpenActionMessage(true);
+  };
+
+  const handleMoveLeaveMessage = () => {
+    console.log(isOpentReaction);
+    if (isOpentReaction) return;
+    setIsOpenActionMessage(false);
+    setIsOpentReaction(false);
+  };
+
+  const handleClickOutsideReaction = () => {
+    setIsOpenActionMessage(false);
+    setIsOpentReaction(false);
+  };
 
   const renderIconSent = () => {
     if (!isOwner) return null;
@@ -56,117 +92,97 @@ const ChatDetailItem = ({
     );
   };
 
-  const handleDeleteMessage = () => {
-    showConfirm("Tin nhắn này sẽ bị thu hồi với mọi người trong đoạn chat");
+  const renderAvatarMessage = () => {
+    return isOwner ? (
+      <Col
+        className="w-5 self-end flex justify-center"
+        style={{ color: "#d9d9d9" }}
+      >
+        {renderIconSent()}
+      </Col>
+    ) : (
+      <Col className="self-end pl-3 pr-2">
+        <CustomAvatar
+          visibility={isHeaderMessageOfBlock}
+          src={avatar_url}
+          size={28}
+        />
+      </Col>
+    );
   };
 
-  const handleReaction = (type: TYPE_REACTION) => {
-    sendReactionMessage({
-      message_id: message.message_id,
-      user_id: currentUser?._id,
-      type,
-      conversation_members: conversation_info.conversation_members,
-    });
-  };
+  const renderNameAuthorMessage = () => (
+    <Col span={24}>
+      <Row>
+        <Col className="w-14"></Col>
+        <Col>
+          <div
+            style={{
+              fontSize: 11,
+              color: "#65676b",
+            }}
+          >
+            {username}
+          </div>
+        </Col>
+      </Row>
+    </Col>
+  );
 
   return (
     <Row
       id={message.message_id}
       className="align-center"
-      style={{ marginTop: isFinalMessageOfBlock ? "8px" : "2px" }}
+      style={{
+        marginTop: isFinalMessageOfBlock ? "8px" : "2px",
+        marginBottom: !!message.reactions?.length ? "20px" : "0",
+      }}
     >
-      {!isOwner && isFinalMessageOfBlock && (
-        <Col span={24}>
-          <Row>
-            <Col span={1}></Col>
-            <Col>
-              <div
-                style={{
-                  fontSize: 11,
-                  color: "#65676b",
-                }}
-              >
-                {username}
-              </div>
-            </Col>
-          </Row>
-        </Col>
-      )}
-      <Col span={24} className={styles.contentMessage}>
-        <Row
-          style={{
-            flexDirection: isOwner ? "row-reverse" : "row",
-          }}
-        >
-          {isOwner ? (
-            <Col
-              style={{
-                width: 20,
-                alignSelf: "end",
-                display: "flex",
-                justifyContent: "center",
-                color: "#d9d9d9",
-              }}
-            >
-              {renderIconSent()}
-            </Col>
-          ) : (
-            <Col className="self-end pl-3 pr-2">
-              <Avatar
-                style={{
-                  visibility: isHeaderMessageOfBlock ? "visible" : "hidden",
-                }}
-                src={avatar_url || "/avatar-default.png"}
+      {!isOwner && isFinalMessageOfBlock && renderNameAuthorMessage()}
+      <Col span={24}>
+        <Row style={{ flexDirection: isOwner ? "row-reverse" : "row" }}>
+          {renderAvatarMessage()}
+          <Col
+            className={clsx(styles.contentMessage)}
+            onMouseOver={handleMoveOverMessage}
+            onMouseLeave={handleMoveLeaveMessage}
+          >
+            <div className="relative">
+              <TextMessage
+                isHeaderMessageOfBlock={isHeaderMessageOfBlock}
+                isFinalMessageOfBlock={isFinalMessageOfBlock}
+                isOwner={isOwner}
+                content={content}
               />
+              {!!message.reactions?.length && (
+                <RenderReactions reactions={message.reactions} />
+              )}
+            </div>
+          </Col>
+          {isOpentActionMessage && (
+            <Col
+              className={clsx("flex items-center")}
+              onMouseOver={handleMoveOverMessage}
+              onMouseLeave={handleMoveLeaveMessage}
+            >
+              {isOwner ? (
+                <div className="flex items-center justify-center">
+                  <IconDeleteMessage size={16} onClick={handleDeleteMessage} />
+                </div>
+              ) : (
+                <div className="relative">
+                  <IconReaction onClick={() => setIsOpentReaction(true)} />
+                  {isOpentReaction && (
+                    <div className="absolute w-64 -top-14 left-5 z-30">
+                      <ClickOutside onClickOutside={handleClickOutsideReaction}>
+                        <ReactionMessage onClick={handleReaction} />
+                      </ClickOutside>
+                    </div>
+                  )}
+                </div>
+              )}
             </Col>
           )}
-
-          <Col style={{ maxWidth: "590px" }}>
-            <TextMessage
-              isHeaderMessageOfBlock={isHeaderMessageOfBlock}
-              isFinalMessageOfBlock={isFinalMessageOfBlock}
-              isOwner={isOwner}
-              content={content}
-            />
-          </Col>
-          <Col
-            className={clsx(
-              !isOpentReaction && styles.actionMessage,
-              "flex items-center ml-2"
-            )}
-          >
-            {isOwner ? (
-              <div className="flex items-center justify-center">
-                <MdDelete
-                  className="cursor-pointer mx-2"
-                  style={{
-                    color: "#65676b",
-                    fontWeight: 700,
-                    display: "block",
-                  }}
-                  size={16}
-                  onClick={handleDeleteMessage}
-                />
-              </div>
-            ) : (
-              <div className="relative">
-                <BsEmojiSmile
-                  className="cursor-pointer mx-2"
-                  style={{ color: "#65676b", fontWeight: 700 }}
-                  size={16}
-                  onClick={() => setIsOpentReaction(true)}
-                />
-                <ClickOutside onClickOutside={() => setIsOpentReaction(false)}>
-                  <div
-                    className={clsx("absolute", !isOpentReaction && "hidden")}
-                    style={{ width: "264px", height: "52px", top: "-52px" }}
-                  >
-                    <ReactionMessage onClick={handleReaction} />
-                  </div>
-                </ClickOutside>
-              </div>
-            )}
-          </Col>
         </Row>
       </Col>
     </Row>
@@ -174,3 +190,19 @@ const ChatDetailItem = ({
 };
 
 export default ChatDetailItem;
+
+const IconDeleteMessage = styled(MdDelete)`
+  color: #65676b;
+  font-weight: 700;
+  display: block;
+  margin: 0 8px;
+  cursor: pointer;
+`;
+
+const IconReaction = styled(BsEmojiSmile)`
+  color: #65676b;
+  font-weight: 700;
+  display: block;
+  margin: 0 8px;
+  cursor: pointer;
+`;
