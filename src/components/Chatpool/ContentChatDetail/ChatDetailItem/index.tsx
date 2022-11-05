@@ -20,6 +20,7 @@ import useChatDetail from "@/hooks/useChatDetail";
 import RenderReactions from "./renderReaction";
 import styled from "styled-components";
 import CustomAvatar from "@/components/common/CustomAvatar";
+import { MessageService } from "@/services/message.service";
 type Props = {
   isOwner: boolean;
   username: string;
@@ -50,7 +51,19 @@ const ChatDetailItem = ({
   const { conversation_info } = useChatDetail();
 
   const handleDeleteMessage = () => {
-    showConfirm("Tin nhắn này sẽ bị thu hồi với mọi người trong đoạn chat");
+    showConfirm(
+      "Tin nhắn này sẽ bị thu hồi với mọi người trong đoạn chat",
+      "ok",
+      onDeleteMessage
+    );
+  };
+
+  const onDeleteMessage = async () => {
+    try {
+      MessageService.deleteMessage(message._id, conversation_info.conversation_members);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleReaction = (type: TYPE_REACTION) => {
@@ -70,7 +83,6 @@ const ChatDetailItem = ({
   };
 
   const handleMoveLeaveMessage = () => {
-    console.log(isOpentReaction);
     if (isOpentReaction) return;
     setIsOpenActionMessage(false);
     setIsOpentReaction(false);

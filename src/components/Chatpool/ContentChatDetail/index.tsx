@@ -92,7 +92,9 @@ const ContentChatDetail = (props: Props) => {
     let nextItem: any = null;
     let isHeaderMessage = false;
     let isFinalMessage = false;
-    const ArrayLitMessage = Object.values(list_messages);
+    const ArrayLitMessage = Object.values(list_messages).filter(
+      (item: any) => !item?.is_deleted
+    );
     ArrayLitMessage?.forEach((message: any, index: number) => {
       const isOwner =
         (message?.sender_id?._id ?? message?.sender_id) === currentUser?._id;

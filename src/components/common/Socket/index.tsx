@@ -76,7 +76,6 @@ const Socket = (props: Props) => {
         conversation_info.conversation_id &&
         conversation_info.conversation_id === conversation_id
       ) {
-        console.log("update reactions", reactions, message_id);
         updateMessage({
           reactions: reactions,
           message_id: message_id,
@@ -84,8 +83,26 @@ const Socket = (props: Props) => {
       }
     });
 
+    socket.on(
+      "SERVER_SEND_DELETE_MESSAGE",
+      (data: { message_id: string; conversation_id: string }) => {
+        const { message_id, conversation_id } = data;
+        if (
+          conversation_info.conversation_id &&
+          conversation_info.conversation_id === conversation_id
+        ) {
+          updateMessage({
+            is_deleted: true,
+            message_id: message_id,
+          });
+        }
+        handleGetConversations();
+      }
+    );
+
     return () => {
       socket.off("SERVER_SEND_NEW_MESSAGE");
+      socket.off("SERVER_SEND_DELETE_MESSAGE");
       socket.off("CLIENT_SEND_MESSAGE_ERROR");
       socket.off("SERVER_SEND_SEEN_MESSAGE");
       socket.off("SERVER_SEND_REACTION_MESSAGE");
