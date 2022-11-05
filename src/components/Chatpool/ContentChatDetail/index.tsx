@@ -24,9 +24,11 @@ const ContentChatDetail = (props: Props) => {
   const { sendSeenMessage } = SocketService();
   const { list_messages, setListMessages, conversation_info } = useChatDetail();
   const [hasMore, setHasMore] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [params, setParams] = useState({
     skip: 0,
     limit: 20,
+    send_time: 0,
   });
 
   const scrollToBottom = () => {
@@ -37,12 +39,14 @@ const ContentChatDetail = (props: Props) => {
   };
 
   const handleGetMessage = async () => {
-    if (!conversation_info.conversation_id) return;
+    if (!conversation_info.conversation_id || isLoading) return;
     try {
+      setIsLoading(true);
       const { data } = await MessageService.getByConversationId(
         conversation_info.conversation_id,
         params.skip,
-        params.limit
+        params.limit,
+        params.send_time
       );
       setHasMore(!!data?.length);
       // check có phải loadmore hay k => nếu loadmore push => nếu không thì unshift
@@ -51,15 +55,18 @@ const ContentChatDetail = (props: Props) => {
       } else {
         setListMessages([...Object.values(list_messages), ...data]);
       }
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
 
-  const fetchMoreData = () => {
+  const fetchMoreData = (send_time = 0, limit = 20) => {
     setParams({
       skip: Object.values(list_messages).length,
-      limit: 20,
+      limit: limit,
+      send_time: send_time,
     });
   };
 
@@ -68,12 +75,18 @@ const ContentChatDetail = (props: Props) => {
     setParams({
       skip: 0,
       limit: 20,
+      send_time: 0,
     });
   }, [conversation_info.conversation_id]);
 
   useEffect(() => {
     handleGetMessage();
-  }, [params.skip, params.limit, conversation_info.conversation_id]);
+  }, [
+    params.skip,
+    params.limit,
+    params.send_time,
+    conversation_info.conversation_id,
+  ]);
 
   useEffect(() => {
     scrollToBottom();
@@ -141,6 +154,11 @@ const ContentChatDetail = (props: Props) => {
           isFinalMessage = true;
         }
       }
+
+      if (message.message_reply) {
+        isHeaderMessage = true;
+        isFinalMessage = true;
+      }
       // done check message gui lien tiep
 
       // check time group
@@ -185,6 +203,7 @@ const ContentChatDetail = (props: Props) => {
           isHeaderMessageOfBlock={isHeaderMessage}
           isFinalMessageOfBlock={isFinalMessage}
           isSent={!!message?._id}
+          loadMore={fetchMoreData}
         />
       );
       listData.push(itemMessage);

@@ -11,6 +11,7 @@ const initialState: {
     conversation_members: Array<any>;
   };
   list_messages: {};
+  message_reply: any;
 } = {
   conversation_info: {
     conversation_id: null,
@@ -20,6 +21,7 @@ const initialState: {
     conversation_members: [],
   },
   list_messages: {},
+  message_reply: null,
 };
 
 export const chatSlice = createSlice({
@@ -35,6 +37,9 @@ export const chatSlice = createSlice({
         newListMessages[message.message_id] = message;
       });
       state.list_messages = newListMessages;
+    },
+    setMessageReply: (state, { payload }) => {
+      state.message_reply = payload;
     },
     pushNewMessage: (state, { payload }) => {
       const newListMessages: any = {};
@@ -78,6 +83,7 @@ export const chatSlice = createSlice({
           conversation_members: [],
         },
         list_messages: [],
+        message_reply: null,
       };
       return state;
     },
@@ -88,7 +94,7 @@ export const conversation_info = (state: AppState) =>
   state.chat.conversation_info;
 export const list_messages = (state: AppState) => state.chat.list_messages;
 export const chat_detail_info = (state: AppState) => state.chat;
-
+export const message_reply = (state: AppState) => state.chat.message_reply;
 export const {
   setConversationInfo,
   setListMessages,
@@ -97,6 +103,7 @@ export const {
   pushNewMessage,
   updateNewMessage,
   updateMessage,
+  setMessageReply,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

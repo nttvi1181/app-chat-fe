@@ -1,4 +1,3 @@
-
 export const hash = function (str: string, seed = 0) {
   let h1 = 0xdeadbeef ^ seed,
     h2 = 0x41c6ce57 ^ seed;
@@ -62,3 +61,12 @@ export const setURL = (text: string) => {
   });
 };
 
+export function convertNumberToString(num: number | string) {
+  return num
+    .toString() // convert number to string
+    .split("") // convert string to array of characters
+    .map(Number) // parse characters as numbers
+    .map((n) => (n || 10) + 64) // convert to char code, correcting for J
+    .map((c) => String.fromCharCode(c)) // convert char codes to strings
+    .join(""); // join values together
+}

@@ -17,6 +17,9 @@ const Chatpool = (props: Props) => {
           <Header style={style.header}>
             <HeaderChatDetail />
           </Header>
+          <Header style={style.header}>
+            <HeaderChatDetail />
+          </Header>
           <Content style={style.content as any}>
             <ContentChatDetail />
           </Content>

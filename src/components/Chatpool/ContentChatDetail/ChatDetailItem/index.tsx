@@ -6,6 +6,7 @@ import {
   BsCheckCircle,
   BsCheckCircleFill,
   BsEmojiSmile,
+  BsReplyFill,
 } from "react-icons/bs";
 import { MdDelete } from "react-icons/md";
 import { showConfirm } from "@/utils/message.helper";
@@ -21,6 +22,7 @@ import RenderReactions from "./renderReaction";
 import styled from "styled-components";
 import CustomAvatar from "@/components/common/CustomAvatar";
 import { MessageService } from "@/services/message.service";
+import { convertNumberToString } from "@/utils/helper";
 type Props = {
   isOwner: boolean;
   username: string;
@@ -31,6 +33,7 @@ type Props = {
   isFinalMessageOfBlock?: boolean;
   message: any;
   isSent: boolean;
+  loadMore: (send_time: number, limit: number) => void;
 };
 
 const ChatDetailItem = ({
@@ -43,12 +46,37 @@ const ChatDetailItem = ({
   message,
   isSent,
   type,
+  loadMore,
 }: Props) => {
   const { sendReactionMessage } = SocketService();
   const { currentUser } = useProfile();
   const [isOpentReaction, setIsOpentReaction] = useState(false);
   const [isOpentActionMessage, setIsOpenActionMessage] = useState(false);
-  const { conversation_info } = useChatDetail();
+  const { conversation_info, setMessageReply, list_messages } = useChatDetail();
+  const { message_reply } = message;
+
+  const handleScrollToReplyMessage = (
+    message_id: string,
+    send_time: number
+  ) => {
+    const isAvailable = Object.values(list_messages).find((message: any) => {
+      return convertNumberToString(message.message_id) === message_id;
+    });
+    if (!isAvailable) {
+      loadMore(send_time, 999999999); //max limit
+      setTimeout(() => {
+        const element = document.querySelector(`#${message_id}`);
+        element?.scrollIntoView();
+      }, 2000);
+    } else {
+      const element = document.querySelector(`#${message_id}`);
+      element?.scrollIntoView();
+    }
+  };
+
+  const handleClickReplyMessage = () => {
+    setMessageReply(message);
+  };
 
   const handleDeleteMessage = () => {
     showConfirm(
@@ -60,7 +88,10 @@ const ChatDetailItem = ({
 
   const onDeleteMessage = async () => {
     try {
-      MessageService.deleteMessage(message._id, conversation_info.conversation_members);
+      MessageService.deleteMessage(
+        message._id,
+        conversation_info.conversation_members
+      );
     } catch (error) {
       console.log(error);
     }
@@ -143,15 +174,71 @@ const ChatDetailItem = ({
 
   return (
     <Row
-      id={message.message_id}
+      id={convertNumberToString(message.message_id)}
       className="align-center"
       style={{
         marginTop: isFinalMessageOfBlock ? "8px" : "2px",
         marginBottom: !!message.reactions?.length ? "20px" : "0",
       }}
     >
-      {!isOwner && isFinalMessageOfBlock && renderNameAuthorMessage()}
+      {!isOwner &&
+        isFinalMessageOfBlock &&
+        !message_reply &&
+        renderNameAuthorMessage()}
       <Col span={24}>
+        {message_reply && (
+          <div
+            className="relative top-2 cursor-pointer"
+            onClick={() =>
+              handleScrollToReplyMessage(
+                convertNumberToString(message_reply.message_id),
+                message_reply.send_time
+              )
+            }
+          >
+            <Row
+              style={{
+                flexDirection: isOwner ? "row-reverse" : "row",
+              }}
+            >
+              <Col className="w-5 self-end flex justify-center"></Col>
+              <Col className={clsx(styles.contentMessage)}>
+                <div className="relative flex items-center">
+                  <IconReplyMessage size={12} />
+                  <span style={{ fontSize: 12, color: "#65676b" }}>
+                    {isOwner
+                      ? `Bạn đã trả lời ${message_reply.sender_id.username}`
+                      : `${message.sender_id.username} đã trả lời ${message_reply.sender_id.username}`}
+                  </span>
+                </div>
+              </Col>
+            </Row>
+            <Row
+              style={{
+                flexDirection: isOwner ? "row-reverse" : "row",
+              }}
+            >
+              <Col
+                className={clsx(
+                  "self-end flex justify-center",
+                  isOwner ? "w-5" : "w-11"
+                )}
+              ></Col>
+              <Col className={clsx(styles.contentMessage)}>
+                <div className="relative">
+                  <TextMessage
+                    isMessageReply
+                    isHeaderMessageOfBlock={isHeaderMessageOfBlock}
+                    isFinalMessageOfBlock={isFinalMessageOfBlock}
+                    isOwner={isOwner}
+                    content={message_reply.content}
+                  />
+                </div>
+              </Col>
+            </Row>
+          </div>
+        )}
+        {/* end replymessage  */}
         <Row style={{ flexDirection: isOwner ? "row-reverse" : "row" }}>
           {renderAvatarMessage()}
           <Col
@@ -182,8 +269,15 @@ const ChatDetailItem = ({
                   <IconDeleteMessage size={16} onClick={handleDeleteMessage} />
                 </div>
               ) : (
-                <div className="relative">
-                  <IconReaction onClick={() => setIsOpentReaction(true)} />
+                <div className="relative flex">
+                  <IconReaction
+                    size={16}
+                    onClick={() => setIsOpentReaction(true)}
+                  />
+                  <IconReplyMessage
+                    size={16}
+                    onClick={handleClickReplyMessage}
+                  />
                   {isOpentReaction && (
                     <div className="absolute w-64 -top-14 left-5 z-30">
                       <ClickOutside onClickOutside={handleClickOutsideReaction}>
@@ -207,7 +301,7 @@ const IconDeleteMessage = styled(MdDelete)`
   color: #65676b;
   font-weight: 700;
   display: block;
-  margin: 0 8px;
+  margin: 0 4px;
   cursor: pointer;
 `;
 
@@ -215,6 +309,14 @@ const IconReaction = styled(BsEmojiSmile)`
   color: #65676b;
   font-weight: 700;
   display: block;
-  margin: 0 8px;
+  margin: 0 4px;
+  cursor: pointer;
+`;
+
+const IconReplyMessage = styled(BsReplyFill)`
+  color: #65676b;
+  font-weight: 700;
+  display: block;
+  margin: 0 4px;
   cursor: pointer;
 `;

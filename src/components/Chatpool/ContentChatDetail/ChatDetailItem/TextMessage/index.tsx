@@ -8,6 +8,7 @@ type Props = {
   content: string;
   isHeaderMessageOfBlock?: boolean;
   isFinalMessageOfBlock?: boolean;
+  isMessageReply?: boolean;
 };
 
 const TextMessage = ({
@@ -15,6 +16,7 @@ const TextMessage = ({
   content,
   isHeaderMessageOfBlock,
   isFinalMessageOfBlock,
+  isMessageReply,
 }: Props) => {
   const links = getUrlLinks(content || "");
   let className = "";
@@ -37,14 +39,19 @@ const TextMessage = ({
       className += " rounded-tl-2xl ";
     }
   }
+
+  if (isMessageReply) className = "rounded-2xl";
   return (
     <div
-      className={className}
+      className={clsx("py-2 px-3", className)}
       style={{
         minHeight: 36,
-        padding: "8px 12px",
-        backgroundColor: !isOwner ? "#e4e6eb" : "#0084ff",
-        color: !isOwner ? "#050505" : "#fff",
+        backgroundColor: isMessageReply
+          ? "#f6f9fa"
+          : !isOwner
+          ? "#e4e6eb"
+          : "#0084ff",
+        color: isMessageReply ? "#65676b" : !isOwner ? "#050505" : "#fff",
         whiteSpace: "pre-wrap",
       }}
     >
