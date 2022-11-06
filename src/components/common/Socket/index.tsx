@@ -10,8 +10,13 @@ type Props = {};
 
 const Socket = (props: Props) => {
   const { currentUser } = useProfile();
-  const { conversation_info, pushNewMessage, updateNewMessage, updateMessage } =
-    useChatDetail();
+  const {
+    conversation_info,
+    pushNewMessage,
+    updateNewMessage,
+    updateMessage,
+    setConversationInfo,
+  } = useChatDetail();
   const { setConversations } = useConversations();
 
   const handleGetConversations = async () => {
@@ -55,6 +60,32 @@ const Socket = (props: Props) => {
       console.log("send message error ==>", data);
     });
 
+    socket.on("SERVER_SEND_PIN_MESSAGE", (data: any) => {
+      if (
+        conversation_info.conversation_id &&
+        conversation_info.conversation_id === data.conversation_id
+      ) {
+        setConversationInfo({
+          ...conversation_info,
+          message_pinned: data.message_pinned,
+        });
+      }
+      handleGetConversations();
+    });
+
+    socket.on("SERVER_SEND_UNPIN_MESSAGE", (data: any) => {
+      if (
+        conversation_info.conversation_id &&
+        conversation_info.conversation_id === data.conversation_id
+      ) {
+        setConversationInfo({
+          ...conversation_info,
+          message_pinned: data.message_pinned,
+        });
+      }
+      handleGetConversations();
+    });
+
     socket.on("SERVER_SEND_SEEN_MESSAGE", (data: any) => {
       if (
         conversation_info.conversation_id &&
@@ -85,8 +116,12 @@ const Socket = (props: Props) => {
 
     socket.on(
       "SERVER_SEND_DELETE_MESSAGE",
-      (data: { message_id: string; conversation_id: string }) => {
-        const { message_id, conversation_id } = data;
+      (data: {
+        message_id: string;
+        conversation_id: string;
+        messageChildren: string;
+      }) => {
+        const { message_id, conversation_id, messageChildren } = data;
         if (
           conversation_info.conversation_id &&
           conversation_info.conversation_id === conversation_id
@@ -94,6 +129,10 @@ const Socket = (props: Props) => {
           updateMessage({
             is_deleted: true,
             message_id: message_id,
+          });
+          updateMessage({
+            message_reply: null,
+            message_id: messageChildren,
           });
         }
         handleGetConversations();
@@ -104,6 +143,8 @@ const Socket = (props: Props) => {
       socket.off("SERVER_SEND_NEW_MESSAGE");
       socket.off("SERVER_SEND_DELETE_MESSAGE");
       socket.off("CLIENT_SEND_MESSAGE_ERROR");
+      socket.off("SERVER_SEND_UNPIN_MESSAGE");
+      socket.off("SERVER_SEND_PIN_MESSAGE");
       socket.off("SERVER_SEND_SEEN_MESSAGE");
       socket.off("SERVER_SEND_REACTION_MESSAGE");
     };

@@ -9,6 +9,7 @@ const initialState: {
     conversation_name: string | null;
     conversation_avatar: Array<string> | null;
     conversation_members: Array<any>;
+    message_pinned: Array<any>;
   };
   list_messages: {};
   message_reply: any;
@@ -19,6 +20,7 @@ const initialState: {
     conversation_name: null,
     conversation_avatar: [],
     conversation_members: [],
+    message_pinned: [],
   },
   list_messages: {},
   message_reply: null,
@@ -62,10 +64,11 @@ export const chatSlice = createSlice({
       Object.values(state.list_messages).forEach((message: any) => {
         newListMessages[message.message_id] = message;
       });
-      newListMessages[payload.message_id] = {
-        ...newListMessages[payload.message_id],
-        ...payload,
-      };
+      if (newListMessages[payload.message_id])
+        newListMessages[payload.message_id] = {
+          ...newListMessages[payload.message_id],
+          ...payload,
+        };
       state.list_messages = newListMessages;
     },
     setChatDetailInfo: (state, { payload }) => {
@@ -80,6 +83,7 @@ export const chatSlice = createSlice({
           origin_conversation_id: null,
           conversation_name: null,
           conversation_avatar: null,
+          message_pinned: [],
           conversation_members: [],
         },
         list_messages: [],

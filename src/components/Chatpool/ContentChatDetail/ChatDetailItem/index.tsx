@@ -7,6 +7,7 @@ import {
   BsCheckCircleFill,
   BsEmojiSmile,
   BsReplyFill,
+  BsPinFill,
 } from "react-icons/bs";
 import { MdDelete } from "react-icons/md";
 import { showConfirm } from "@/utils/message.helper";
@@ -23,6 +24,9 @@ import styled from "styled-components";
 import CustomAvatar from "@/components/common/CustomAvatar";
 import { MessageService } from "@/services/message.service";
 import { convertNumberToString } from "@/utils/helper";
+import { ConversationService } from "@/services/conversation.service";
+import useQueryListMessageByConversationId from "@/hooks/useQueryListMessageByConversationId";
+import { UNLIMITED } from "@/constant";
 type Props = {
   isOwner: boolean;
   username: string;
@@ -33,7 +37,6 @@ type Props = {
   isFinalMessageOfBlock?: boolean;
   message: any;
   isSent: boolean;
-  loadMore: (send_time: number, limit: number) => void;
 };
 
 const ChatDetailItem = ({
@@ -46,7 +49,6 @@ const ChatDetailItem = ({
   message,
   isSent,
   type,
-  loadMore,
 }: Props) => {
   const { sendReactionMessage } = SocketService();
   const { currentUser } = useProfile();
@@ -54,23 +56,15 @@ const ChatDetailItem = ({
   const [isOpentActionMessage, setIsOpenActionMessage] = useState(false);
   const { conversation_info, setMessageReply, list_messages } = useChatDetail();
   const { message_reply } = message;
-
-  const handleScrollToReplyMessage = (
-    message_id: string,
-    send_time: number
-  ) => {
-    const isAvailable = Object.values(list_messages).find((message: any) => {
-      return convertNumberToString(message.message_id) === message_id;
-    });
-    if (!isAvailable) {
-      loadMore(send_time, 999999999); //max limit
-      setTimeout(() => {
-        const element = document.querySelector(`#${message_id}`);
-        element?.scrollIntoView();
-      }, 2000);
-    } else {
-      const element = document.querySelector(`#${message_id}`);
-      element?.scrollIntoView();
+  const { handleScrollToReplyMessage } = useQueryListMessageByConversationId();
+  const handleClickPinMessage = () => {
+    try {
+      ConversationService.pinMessage({
+        message,
+        conversation_id: conversation_info.conversation_id,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -191,7 +185,7 @@ const ChatDetailItem = ({
             className="relative top-2 cursor-pointer"
             onClick={() =>
               handleScrollToReplyMessage(
-                convertNumberToString(message_reply.message_id),
+                message_reply.message_id,
                 message_reply.send_time
               )
             }
@@ -242,7 +236,7 @@ const ChatDetailItem = ({
         <Row style={{ flexDirection: isOwner ? "row-reverse" : "row" }}>
           {renderAvatarMessage()}
           <Col
-            className={clsx(styles.contentMessage)}
+            className={clsx(styles.contentMessage, "content-message")}
             onMouseOver={handleMoveOverMessage}
             onMouseLeave={handleMoveLeaveMessage}
           >
@@ -278,6 +272,7 @@ const ChatDetailItem = ({
                     size={16}
                     onClick={handleClickReplyMessage}
                   />
+                  <IconPinMessage size={16} onClick={handleClickPinMessage} />
                   {isOpentReaction && (
                     <div className="absolute w-64 -top-14 left-5 z-30">
                       <ClickOutside onClickOutside={handleClickOutsideReaction}>
@@ -314,6 +309,13 @@ const IconReaction = styled(BsEmojiSmile)`
 `;
 
 const IconReplyMessage = styled(BsReplyFill)`
+  color: #65676b;
+  font-weight: 700;
+  display: block;
+  margin: 0 4px;
+  cursor: pointer;
+`;
+const IconPinMessage = styled(BsPinFill)`
   color: #65676b;
   font-weight: 700;
   display: block;

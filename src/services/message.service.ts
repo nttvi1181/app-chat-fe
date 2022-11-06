@@ -16,4 +16,10 @@ export const MessageService = {
       conversation_members: members,
     });
   },
+
+  searchByContent: async (conversationId: string, searchKey: string) => {
+    return HttpRequest.get(
+      `/message/search?conversation_id=${conversationId}&searchKey=${searchKey}`
+    );
+  },
 };

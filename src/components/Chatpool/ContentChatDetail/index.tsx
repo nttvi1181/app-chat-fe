@@ -8,6 +8,7 @@ import ChatDetailItem from "./ChatDetailItem";
 import moment from "moment";
 import styled from "styled-components";
 import { SocketService } from "@/services/socket-io";
+import useQueryListMessageByConversationId from "@/hooks/useQueryListMessageByConversationId";
 
 type Props = {};
 const TIME_MESSAGE_CONSECUTIVE = 60; //seconds
@@ -23,8 +24,8 @@ const ContentChatDetail = (props: Props) => {
   const { currentUser } = useProfile();
   const { sendSeenMessage } = SocketService();
   const { list_messages, setListMessages, conversation_info } = useChatDetail();
-  const [hasMore, setHasMore] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { fetchMessage, isLoading, hasMore } =
+    useQueryListMessageByConversationId();
   const [params, setParams] = useState({
     skip: 0,
     limit: 20,
@@ -35,30 +36,6 @@ const ContentChatDetail = (props: Props) => {
     const objDiv = document.getElementById("scrollableDiv") as HTMLElement;
     if (objDiv) {
       objDiv.scrollTo({ top: objDiv.scrollHeight, behavior: "smooth" });
-    }
-  };
-
-  const handleGetMessage = async () => {
-    if (!conversation_info.conversation_id || isLoading) return;
-    try {
-      setIsLoading(true);
-      const { data } = await MessageService.getByConversationId(
-        conversation_info.conversation_id,
-        params.skip,
-        params.limit,
-        params.send_time
-      );
-      setHasMore(!!data?.length);
-      // check có phải loadmore hay k => nếu loadmore push => nếu không thì unshift
-      if (params.skip === 0) {
-        setListMessages([...data, ...Object.values(list_messages)]);
-      } else {
-        setListMessages([...Object.values(list_messages), ...data]);
-      }
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
     }
   };
 
@@ -77,15 +54,19 @@ const ContentChatDetail = (props: Props) => {
       limit: 20,
       send_time: 0,
     });
+    fetchMessage({
+      skip: 0,
+      limit: 20,
+      send_time: 0,
+    });
   }, [conversation_info.conversation_id]);
 
   useEffect(() => {
-    handleGetMessage();
+    fetchMessage(params);
   }, [
     params.skip,
     params.limit,
     params.send_time,
-    conversation_info.conversation_id,
   ]);
 
   useEffect(() => {
@@ -203,13 +184,14 @@ const ContentChatDetail = (props: Props) => {
           isHeaderMessageOfBlock={isHeaderMessage}
           isFinalMessageOfBlock={isFinalMessage}
           isSent={!!message?._id}
-          loadMore={fetchMoreData}
         />
       );
       listData.push(itemMessage);
       if (TimeLineGroup) {
         listData.push(
-          <TimeLineGroupComponent>{TimeLineGroup}</TimeLineGroupComponent>
+          <TimeLineGroupComponent key={-index}>
+            {TimeLineGroup}
+          </TimeLineGroupComponent>
         );
       }
     });

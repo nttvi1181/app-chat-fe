@@ -7,35 +7,51 @@ type Props = {
 
 const RenderReactions = ({ reactions }: Props) => {
   const renderReaction = () => {
-    return reactions.map((reaction: any) => {
+    return reactions.map((reaction: any, index: number) => {
       switch (reaction.type) {
         case TYPE_REACTION.HAHA:
           return (
-            <div>
+            <div key={index}>
               <img style={{ width: 16, height: 16 }} src="/haha-reaction.png" />
             </div>
           );
         case TYPE_REACTION.HEART:
           return (
-            <img style={{ width: 16, height: 16 }} src="/heart-reaction.png" />
+            <img
+              key={index}
+              style={{ width: 16, height: 16 }}
+              src="/heart-reaction.png"
+            />
           );
         case TYPE_REACTION.SAD:
           return (
-            <img style={{ width: 16, height: 16 }} src="/sad-reaction.png" />
+            <img
+              key={index}
+              style={{ width: 16, height: 16 }}
+              src="/sad-reaction.png"
+            />
           );
         case TYPE_REACTION.ANGRY:
           return (
-            <img style={{ width: 16, height: 16 }} src="/angry-reaction.png" />
+            <img
+              key={index}
+              style={{ width: 16, height: 16 }}
+              src="/angry-reaction.png"
+            />
           );
         case TYPE_REACTION.LIKE:
           return (
-            <div style={{ width: 16, height: 16 }}>
+            <div key={index} style={{ width: 16, height: 16 }}>
               <img src="/like-reaction.png" />
             </div>
           );
         case TYPE_REACTION.WOW:
           return (
-            <img style={{ width: 16, height: 16 }} src="/wow-reaction.png" />
+            <img
+              key={index}
+              style={{ width: 16, height: 16 }}
+              src="/wow-reaction.png"
+            />
           );
         default:
           return null;

@@ -31,6 +31,7 @@ const ConversationItem = ({ item }: Props) => {
       conversation_info: {
         conversation_id: conversation.conversation_id,
         origin_conversation_id: conversation?._id,
+        message_pinned:conversation.message_pinned,
         conversation_name: getNameConversation(),
         conversation_avatar: getAvatarConversation(),
         conversation_members: conversation.members?.map(
