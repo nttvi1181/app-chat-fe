@@ -27,6 +27,7 @@ import { convertNumberToString } from "@/utils/helper";
 import { ConversationService } from "@/services/conversation.service";
 import useQueryListMessageByConversationId from "@/hooks/useQueryListMessageByConversationId";
 import { UNLIMITED } from "@/constant";
+import ImageMessage from "./ImageMessage";
 type Props = {
   isOwner: boolean;
   username: string;
@@ -166,6 +167,54 @@ const ChatDetailItem = ({
     </Col>
   );
 
+  const renderContent = () => {
+    switch (type) {
+      case "TEXT":
+        return (
+          <TextMessage
+            isHeaderMessageOfBlock={isHeaderMessageOfBlock}
+            isFinalMessageOfBlock={isFinalMessageOfBlock}
+            isOwner={isOwner}
+            content={content}
+          />
+        );
+      case "IMAGE":
+        return (
+          <ImageMessage
+            isHeaderMessageOfBlock={isHeaderMessageOfBlock}
+            isFinalMessageOfBlock={isFinalMessageOfBlock}
+            isOwner={isOwner}
+            content={content}
+          />
+        );
+    }
+  };
+
+  const renderContentMessageReply = (message_reply: any) => {
+    switch (message_reply?.type) {
+      case "TEXT":
+        return (
+          <TextMessage
+            isMessageReply
+            isHeaderMessageOfBlock={isHeaderMessageOfBlock}
+            isFinalMessageOfBlock={isFinalMessageOfBlock}
+            isOwner={isOwner}
+            content={message_reply?.content}
+          />
+        );
+      case "IMAGE":
+        return (
+          <ImageMessage
+            isHeaderMessageOfBlock={isHeaderMessageOfBlock}
+            isFinalMessageOfBlock={isFinalMessageOfBlock}
+            isOwner={isOwner}
+            content={message_reply?.content}
+            isMessageReply
+          />
+        );
+    }
+  };
+
   return (
     <Row
       id={convertNumberToString(message.message_id)}
@@ -220,13 +269,14 @@ const ChatDetailItem = ({
               ></Col>
               <Col className={clsx(styles.contentMessage)}>
                 <div className="relative">
-                  <TextMessage
+                  {renderContentMessageReply(message_reply)}
+                  {/* <TextMessage
                     isMessageReply
                     isHeaderMessageOfBlock={isHeaderMessageOfBlock}
                     isFinalMessageOfBlock={isFinalMessageOfBlock}
                     isOwner={isOwner}
                     content={message_reply.content}
-                  />
+                  /> */}
                 </div>
               </Col>
             </Row>
@@ -241,12 +291,7 @@ const ChatDetailItem = ({
             onMouseLeave={handleMoveLeaveMessage}
           >
             <div className="relative">
-              <TextMessage
-                isHeaderMessageOfBlock={isHeaderMessageOfBlock}
-                isFinalMessageOfBlock={isFinalMessageOfBlock}
-                isOwner={isOwner}
-                content={content}
-              />
+              {renderContent()}
               {!!message.reactions?.length && (
                 <RenderReactions reactions={message.reactions} />
               )}
