@@ -56,7 +56,39 @@ export const getUrlLinks = (text: string) => {
 export const setURL = (text: string) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   return text.replace(urlRegex, (url) => {
-    const urlOrigin = url.replace(ORIGIN_TEXT, '');
+    const urlOrigin = url.replace(ORIGIN_TEXT, "");
     return `<a href="${urlOrigin}" target="_blank" rel="noopener" class="link_href_post_details">${urlOrigin}</a>`;
   });
+};
+
+export function convertNumberToString(num: number | string) {
+  return num
+    .toString() // convert number to string
+    .split("") // convert string to array of characters
+    .map(Number) // parse characters as numbers
+    .map((n) => (n || 10) + 64) // convert to char code, correcting for J
+    .map((c) => String.fromCharCode(c)) // convert char codes to strings
+    .join(""); // join values together
+}
+export const dowloadFile = (
+  urlFile: string,
+  type = "image/jpeg",
+  name = "file"
+) => {
+  fetch(urlFile, {
+    method: "GET",
+    // headers: {
+    //   "Content-Type": type,
+    // },
+  })
+    .then((response) => response.blob())
+    .then((blob) => {
+      const url = window.URL.createObjectURL(new Blob([blob], { type: type }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", name);
+      document.body.appendChild(link);
+      link.click();
+      link?.parentNode?.removeChild(link);
+    });
 };

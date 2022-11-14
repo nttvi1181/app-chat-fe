@@ -29,7 +29,7 @@ const Contacts = ({ data }: Props) => {
         conversation_id: conversation_id,
         origin_conversation_id: null,
         conversation_name: profile?.username,
-        conversation_avatar: profile?.avatar_url,
+        conversation_avatar: [profile?.avatar_url],
         conversation_members: [currentUser._id, profile._id],
       },
       list_messages: [],

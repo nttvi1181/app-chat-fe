@@ -9,8 +9,10 @@ const initialState: {
     conversation_name: string | null;
     conversation_avatar: Array<string> | null;
     conversation_members: Array<any>;
+    message_pinned: Array<any>;
   };
   list_messages: {};
+  message_reply: any;
 } = {
   conversation_info: {
     conversation_id: null,
@@ -18,8 +20,10 @@ const initialState: {
     conversation_name: null,
     conversation_avatar: [],
     conversation_members: [],
+    message_pinned: [],
   },
   list_messages: {},
+  message_reply: null,
 };
 
 export const chatSlice = createSlice({
@@ -35,6 +39,9 @@ export const chatSlice = createSlice({
         newListMessages[message.message_id] = message;
       });
       state.list_messages = newListMessages;
+    },
+    setMessageReply: (state, { payload }) => {
+      state.message_reply = payload;
     },
     pushNewMessage: (state, { payload }) => {
       const newListMessages: any = {};
@@ -52,6 +59,18 @@ export const chatSlice = createSlice({
       newListMessages[payload.message_id] = payload;
       state.list_messages = newListMessages;
     },
+    updateMessage: (state, { payload }) => {
+      const newListMessages: any = {};
+      Object.values(state.list_messages).forEach((message: any) => {
+        newListMessages[message.message_id] = message;
+      });
+      if (newListMessages[payload.message_id])
+        newListMessages[payload.message_id] = {
+          ...newListMessages[payload.message_id],
+          ...payload,
+        };
+      state.list_messages = newListMessages;
+    },
     setChatDetailInfo: (state, { payload }) => {
       state = { ...payload };
       return state;
@@ -64,10 +83,13 @@ export const chatSlice = createSlice({
           origin_conversation_id: null,
           conversation_name: null,
           conversation_avatar: null,
+          message_pinned: [],
           conversation_members: [],
         },
         list_messages: [],
+        message_reply: null,
       };
+      return state;
     },
   },
 });
@@ -76,7 +98,7 @@ export const conversation_info = (state: AppState) =>
   state.chat.conversation_info;
 export const list_messages = (state: AppState) => state.chat.list_messages;
 export const chat_detail_info = (state: AppState) => state.chat;
-
+export const message_reply = (state: AppState) => state.chat.message_reply;
 export const {
   setConversationInfo,
   setListMessages,
@@ -84,6 +106,8 @@ export const {
   resetChatDetail,
   pushNewMessage,
   updateNewMessage,
+  updateMessage,
+  setMessageReply,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

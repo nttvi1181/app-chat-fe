@@ -15,6 +15,10 @@ export const SocketService = () => {
   const socket = connectSocket();
   return {
     sendNewMessage: (data: any) => socket.emit("CLIENT_SEND_NEW_MESSAGE", data),
+    sendSeenMessage: (data: any) =>
+      socket.emit("CLIENT_SEND_SEEN_MESSAGE", data),
+    sendReactionMessage: (data: any) =>
+      socket.emit("CLIENT_SEND_REACTION_MESSAGE", data),
   };
 };
 

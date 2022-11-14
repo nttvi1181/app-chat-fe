@@ -9,7 +9,7 @@ const useConversations = () => {
   const dispatch = useAppDispatch();
   const conversations = useAppSelector(ConversationSelector);
 
-  const setConversations = (user: Profile | null) => {
+  const setConversations = (user: any | null) => {
     dispatch(setConversationsAction(user));
   };
 

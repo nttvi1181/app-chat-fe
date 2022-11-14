@@ -3,6 +3,7 @@ import { useState } from "react";
 import UserService from "../services/userApi";
 import { useNavigate } from "react-router-dom";
 import useProfile from "./useProfile";
+import { message } from "antd";
 
 const useAuth = () => {
   const navigate = useNavigate();
@@ -35,8 +36,11 @@ const useAuth = () => {
       localStorage.setItem("_refresh_token", data.refreshAccessToken);
       navigate("/");
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       setError(error);
+      console.log(error?.response?.data?.message);
+      message.error(error?.message);
+      setLoading(false);
     }
   };
 

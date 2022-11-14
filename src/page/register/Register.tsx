@@ -23,13 +23,11 @@ function Register() {
   const { onRegister } = useAuth();
   const formik = useFormik({
     initialValues: {
-      phone: "",
-      email: "",
-      confirm_password: "",
-      password: "",
+      gender: "Nam",
     },
-    onSubmit: (values) => {
-      onRegister(values);
+    onSubmit: (values: any) => {
+      // onRegister(values);
+      console.log(values);
     },
   });
   return (
@@ -108,7 +106,7 @@ function Register() {
               onChange={(e: any) => {
                 formik.setFieldValue(
                   "birthday",
-                  moment(e).format("MM-DD-YYYY")
+                  moment(e).format("MM/DD/YYYY")
                 );
               }}
               name="birthday"
