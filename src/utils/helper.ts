@@ -92,3 +92,52 @@ export const dowloadFile = (
       link?.parentNode?.removeChild(link);
     });
 };
+
+export const toBase64 = (file: File) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
+export const getThumbailVideo = (
+  urlVideo: string,
+  width: number,
+  height: number,
+  isRevokeUrl?: boolean
+) =>
+  new Promise((resolve) => {
+    const canvas = document.createElement("canvas");
+    const video = document.createElement("video");
+    video.setAttribute("crossorigin", "anonymous");
+    video.autoplay = true;
+    video.muted = true;
+    video.src = urlVideo;
+    video.preload = "metadata";
+    video.playsInline = true;
+    video.addEventListener("loadeddata", () => {
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx?.drawImage(video, 0, 0, width, height);
+      video.pause();
+      video.remove();
+      const imageUrl = canvas.toDataURL("image/png");
+      const success = imageUrl.length > 100000;
+      if (!isRevokeUrl && success) {
+        URL.revokeObjectURL(urlVideo);
+      }
+      return resolve({
+        imageUrl,
+        duration: Math.round(video.duration),
+      });
+    });
+  });
+
+export const getDurationVideo = (urlVideo: string) =>
+  new Promise((resolve) => {
+    const video = document.createElement("video");
+    video.src = urlVideo;
+    video.onloadeddata = () => resolve(Math.round(video.duration));
+  });

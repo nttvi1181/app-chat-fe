@@ -6,18 +6,16 @@ import useUi from "@/hooks/useUi";
 import { MessageService } from "@/services/message.service";
 import useSearchMessage from "@/hooks/useSearchMessage";
 const { Search } = Input;
-type Props = {
-  message: any;
-};
+type Props = {};
 
-const SearchMessage = ({ message }: Props) => {
+const SearchMessage = ({}: Props) => {
   const { setIsSearchChat } = useUi();
   const { conversation_info } = useChatDetail();
   const { setListMessageSearch } = useSearchMessage();
 
   const handleCloseSearch = () => {
     setIsSearchChat(false);
-    setListMessageSearch([])
+    setListMessageSearch([]);
   };
 
   const onSearch = async (value: string) => {

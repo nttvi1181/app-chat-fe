@@ -21,12 +21,12 @@ const Chatpool = (props: Props) => {
           <Header style={style.header}>
             <HeaderChatDetail />
           </Header>
-          {!!conversation_info.message_pinned.length && (
+          {!!conversation_info?.message_pinned?.length && (
             <Header style={{ ...style.header, height: 45 }}>
               <MessagePinned
                 message={
-                  conversation_info.message_pinned[
-                    conversation_info.message_pinned.length - 1
+                  conversation_info?.message_pinned[
+                    conversation_info?.message_pinned?.length - 1
                   ]
                 }
               />
@@ -34,13 +34,7 @@ const Chatpool = (props: Props) => {
           )}
           {isSearchChat && (
             <Header style={{ ...style.header }}>
-              <SearchMessage
-                message={
-                  conversation_info.message_pinned[
-                    conversation_info.message_pinned.length - 1
-                  ]
-                }
-              />
+              <SearchMessage />
             </Header>
           )}
           <Content style={style.content as any}>

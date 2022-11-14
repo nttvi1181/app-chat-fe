@@ -1,6 +1,6 @@
 import * as io from "socket.io-client";
 // const baseURL = "http://192.168.0.100:8080";
-const baseURL = "http://192.168.0.107:8080";
+const baseURL = "http://192.168.0.103:8080";
 
 const connectSocket = () => {
   if (window.socket) {

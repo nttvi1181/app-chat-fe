@@ -28,6 +28,8 @@ import { ConversationService } from "@/services/conversation.service";
 import useQueryListMessageByConversationId from "@/hooks/useQueryListMessageByConversationId";
 import { UNLIMITED } from "@/constant";
 import ImageMessage from "./ImageMessage";
+import VideoMessage from "./VideoMessage";
+import FileAttachment from "./FileAttachment";
 type Props = {
   isOwner: boolean;
   username: string;
@@ -187,6 +189,26 @@ const ChatDetailItem = ({
             content={content}
           />
         );
+      case "VIDEO":
+        return (
+          <VideoMessage
+            isHeaderMessageOfBlock={isHeaderMessageOfBlock}
+            isFinalMessageOfBlock={isFinalMessageOfBlock}
+            isOwner={isOwner}
+            content={content}
+            isMessageReply
+          />
+        );
+      case "ATTACH":
+        return (
+          <FileAttachment
+            isHeaderMessageOfBlock={isHeaderMessageOfBlock}
+            isFinalMessageOfBlock={isFinalMessageOfBlock}
+            isOwner={isOwner}
+            content={content}
+            isMessageReply
+          />
+        );
     }
   };
 
@@ -205,6 +227,16 @@ const ChatDetailItem = ({
       case "IMAGE":
         return (
           <ImageMessage
+            isHeaderMessageOfBlock={isHeaderMessageOfBlock}
+            isFinalMessageOfBlock={isFinalMessageOfBlock}
+            isOwner={isOwner}
+            content={message_reply?.content}
+            isMessageReply
+          />
+        );
+      case "VIDEO":
+        return (
+          <VideoMessage
             isHeaderMessageOfBlock={isHeaderMessageOfBlock}
             isFinalMessageOfBlock={isFinalMessageOfBlock}
             isOwner={isOwner}

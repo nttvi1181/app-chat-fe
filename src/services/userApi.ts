@@ -18,6 +18,10 @@ const UserService = {
     return await HttpRequest.post("/user/register", data);
   },
 
+  search: async (data: { searchKey: string }) => {
+    return await HttpRequest.post("/user/search", data);
+  },
+
   getMyinfo: async () => {
     return await HttpRequest.get("/user/myinfo");
   },

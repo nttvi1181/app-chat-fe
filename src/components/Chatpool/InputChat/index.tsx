@@ -18,6 +18,18 @@ import { RcFile } from "antd/lib/upload";
 import { AiFillCloseCircle, AiOutlinePlus } from "react-icons/ai";
 import { MediaService } from "@/services/MediaService";
 import useUi from "@/hooks/useUi";
+import { getThumbailVideo, toBase64 } from "@/utils/helper";
+import PreviewFileItem from "./PreviewFileItem";
+import EmojiPicker from "emoji-picker-react";
+import ClickOutside from "@/components/common/ClickOutside";
+import {
+  ATTACH_FILE_DOCX,
+  ATTACH_FILE_PDF,
+  ATTACH_FILE_PPT,
+  ATTACH_FILE_PPTX,
+  ATTACH_FILE_XLSX,
+  LIST_ATTACH_FILE_TYPE,
+} from "@/constant";
 const { TextArea } = Input;
 type Props = {};
 
@@ -37,6 +49,7 @@ const InputChat = (props: Props) => {
 
   const [valueInputText, setValueText] = useState("");
   const [filesInput, setFilesInput] = useState([]);
+  const [isOpenEmoji, setIsOpenEmoji] = useState(false);
 
   const handleRemoveReplyMessage = () => {
     setMessageReply(null);
@@ -51,7 +64,7 @@ const InputChat = (props: Props) => {
   };
 
   const onChangeEmojio = (e: any) => {
-    console.log(e);
+    setValueText((prev) => prev + e.emoji);
   };
 
   const handleKeyPress = (e: any) => {
@@ -59,15 +72,92 @@ const InputChat = (props: Props) => {
       e.preventDefault();
       e.stopPropagation();
       handleSendMessage();
+      setIsOpenEmoji(false);
     }
   };
 
   const handleSendMessageFile = async () => {
     try {
       if (!filesInput.length) return;
-      const fileImages = filesInput.filter((file) => file);
+      const fileImages = filesInput.filter((file: any) =>
+        file?.type?.includes("image")
+      );
+      const fileVideos = filesInput.filter((file: any) =>
+        file?.type?.includes("video")
+      );
+      const fileAttachsPDF = filesInput.filter((file: any) =>
+        file?.type?.includes(ATTACH_FILE_PDF)
+      );
+      const fileAttachsDOCX = filesInput.filter((file: any) =>
+        file?.type?.includes(ATTACH_FILE_DOCX)
+      );
+      const fileAttachsPPT = filesInput.filter((file: any) =>
+        file?.type?.includes(ATTACH_FILE_PPT)
+      );
+      const fileAttachsPPTX = filesInput.filter((file: any) =>
+        file?.type?.includes(ATTACH_FILE_PPTX)
+      );
+      const fileAttachsXLSX = filesInput.filter((file: any) =>
+        file?.type?.includes(ATTACH_FILE_XLSX)
+      );
       setLoading(true);
-      const responseFile = await Promise.all(
+      const responseFilePDF = await Promise.all(
+        fileAttachsPDF?.map((file) => {
+          const formData = new FormData();
+          formData.append("fileUpload", file);
+          formData.append(
+            `folder`,
+            `/app-chat-fpt/conversation/${conversation_info.conversation_id}`
+          );
+          return MediaService.uploadImageAvatar(formData);
+        })
+      );
+      const responseFileDOCX = await Promise.all(
+        fileAttachsDOCX?.map((file) => {
+          const formData = new FormData();
+          formData.append("fileUpload", file);
+          formData.append(
+            `folder`,
+            `/app-chat-fpt/conversation/${conversation_info.conversation_id}`
+          );
+          return MediaService.uploadImageAvatar(formData);
+        })
+      );
+      const responseFilePPT = await Promise.all(
+        fileAttachsPPT?.map((file) => {
+          const formData = new FormData();
+          formData.append("fileUpload", file);
+          formData.append(
+            `folder`,
+            `/app-chat-fpt/conversation/${conversation_info.conversation_id}`
+          );
+          return MediaService.uploadImageAvatar(formData);
+        })
+      );
+      const responseFilePPTX = await Promise.all(
+        fileAttachsPPTX?.map((file) => {
+          const formData = new FormData();
+          formData.append("fileUpload", file);
+          formData.append(
+            `folder`,
+            `/app-chat-fpt/conversation/${conversation_info.conversation_id}`
+          );
+          return MediaService.uploadImageAvatar(formData);
+        })
+      );
+      const responseFileXLSX = await Promise.all(
+        fileAttachsXLSX?.map((file) => {
+          const formData = new FormData();
+          formData.append("fileUpload", file);
+          formData.append(
+            `folder`,
+            `/app-chat-fpt/conversation/${conversation_info.conversation_id}`
+          );
+          return MediaService.uploadImageAvatar(formData);
+        })
+      );
+
+      const responseFileImage = await Promise.all(
         fileImages?.map((file) => {
           const formData = new FormData();
           formData.append("fileUpload", file);
@@ -78,23 +168,176 @@ const InputChat = (props: Props) => {
           return MediaService.uploadImageAvatar(formData);
         })
       );
-      const contentMessageImage = responseFile?.map(
+
+      const responseFileVideo = await Promise.all(
+        fileVideos?.map((file) => {
+          const formData = new FormData();
+          formData.append("fileUpload", file);
+          formData.append(
+            `folder`,
+            `/app-chat-fpt/conversation/${conversation_info.conversation_id}`
+          );
+          return MediaService.uploadImageAvatar(formData);
+        })
+      );
+      console.log(responseFilePDF);
+      const contentMessageAttachPDF = responseFilePDF?.map((item: any) => ({
+        url: item?.data?.url,
+        size: item?.data?.bytes,
+        name: item?.data?.name,
+      }));
+      const contentMessageAttachDOCX = responseFileDOCX?.map((item: any) => ({
+        url: item?.data?.url,
+        size: item?.data?.bytes,
+        name: item?.data?.name,
+      }));
+      const contentMessageAttachPPT = responseFilePPT?.map((item: any) => ({
+        url: item?.data?.url,
+        size: item?.data?.bytes,
+        name: item?.data?.name,
+      }));
+      const contentMessageAttachPPTX = responseFilePPTX?.map((item: any) => ({
+        url: item?.data?.url,
+        size: item?.data?.bytes,
+        name: item?.data?.name,
+      }));
+      const contentMessageAttachXLSX = responseFileXLSX?.map((item: any) => ({
+        url: item?.data?.url,
+        size: item?.data?.bytes,
+        name: item?.data?.name,
+      }));
+
+      const contentMessageImage = responseFileImage?.map(
         (item: any) => item?.data?.url
       );
-      const data = {
-        message_id: new Date().getTime().toString(),
-        content: JSON.stringify(contentMessageImage),
-        conversation_id: conversation_info.conversation_id,
-        sender_id: currentUser?._id,
-        recive_id: conversation_info.conversation_members,
-        type: "IMAGE",
-        is_check_conversation: !Object.values(list_messages).length,
-        member_seens: [currentUser?._id],
-        send_time: new Date().getTime(),
-        message_reply,
-      };
-      pushNewMessage(data);
-      sendNewMessage(data);
+      const contentMessageVideo = responseFileVideo?.map(
+        (item: any) => item?.data?.url
+      );
+
+      //
+      if (contentMessageAttachPDF.length) {
+        const dataAttach = {
+          message_id: new Date().getTime().toString(),
+          content: JSON.stringify(contentMessageAttachPDF),
+          conversation_id: conversation_info.conversation_id,
+          sender_id: currentUser?._id,
+          recive_id: conversation_info.conversation_members,
+          type: "ATTACH",
+          is_check_conversation: !Object.values(list_messages).length,
+          member_seens: [currentUser?._id],
+          send_time: new Date().getTime(),
+          message_reply,
+        };
+        pushNewMessage(dataAttach);
+        sendNewMessage(dataAttach);
+      }
+      //
+      if (contentMessageAttachDOCX.length) {
+        const dataAttach = {
+          message_id: new Date().getTime().toString(),
+          content: JSON.stringify(contentMessageAttachDOCX),
+          conversation_id: conversation_info.conversation_id,
+          sender_id: currentUser?._id,
+          recive_id: conversation_info.conversation_members,
+          type: "ATTACH",
+          is_check_conversation: !Object.values(list_messages).length,
+          member_seens: [currentUser?._id],
+          send_time: new Date().getTime(),
+          message_reply,
+        };
+        pushNewMessage(dataAttach);
+        sendNewMessage(dataAttach);
+      }
+      //
+      //
+      if (contentMessageAttachPPT.length) {
+        const dataAttach = {
+          message_id: new Date().getTime().toString(),
+          content: JSON.stringify(contentMessageAttachPPT),
+          conversation_id: conversation_info.conversation_id,
+          sender_id: currentUser?._id,
+          recive_id: conversation_info.conversation_members,
+          type: "ATTACH",
+          is_check_conversation: !Object.values(list_messages).length,
+          member_seens: [currentUser?._id],
+          send_time: new Date().getTime(),
+          message_reply,
+        };
+        pushNewMessage(dataAttach);
+        sendNewMessage(dataAttach);
+      }
+      //
+      //
+      if (contentMessageAttachPPTX.length) {
+        const dataAttach = {
+          message_id: new Date().getTime().toString(),
+          content: JSON.stringify(contentMessageAttachPPTX),
+          conversation_id: conversation_info.conversation_id,
+          sender_id: currentUser?._id,
+          recive_id: conversation_info.conversation_members,
+          type: "ATTACH",
+          is_check_conversation: !Object.values(list_messages).length,
+          member_seens: [currentUser?._id],
+          send_time: new Date().getTime(),
+          message_reply,
+        };
+        pushNewMessage(dataAttach);
+        sendNewMessage(dataAttach);
+      }
+      //
+      if (contentMessageAttachXLSX.length) {
+        const dataAttach = {
+          message_id: new Date().getTime().toString(),
+          content: JSON.stringify(contentMessageAttachXLSX),
+          conversation_id: conversation_info.conversation_id,
+          sender_id: currentUser?._id,
+          recive_id: conversation_info.conversation_members,
+          type: "ATTACH",
+          is_check_conversation: !Object.values(list_messages).length,
+          member_seens: [currentUser?._id],
+          send_time: new Date().getTime(),
+          message_reply,
+        };
+        pushNewMessage(dataAttach);
+        sendNewMessage(dataAttach);
+      }
+      //
+
+      if (contentMessageImage.length) {
+        const dataImage = {
+          message_id: new Date().getTime().toString(),
+          content: JSON.stringify(contentMessageImage),
+          conversation_id: conversation_info.conversation_id,
+          sender_id: currentUser?._id,
+          recive_id: conversation_info.conversation_members,
+          type: "IMAGE",
+          is_check_conversation: !Object.values(list_messages).length,
+          member_seens: [currentUser?._id],
+          send_time: new Date().getTime(),
+          message_reply,
+        };
+        pushNewMessage(dataImage);
+        sendNewMessage(dataImage);
+      }
+
+      //
+      if (responseFileVideo.length) {
+        const dataVideo = {
+          message_id: new Date().getTime().toString(),
+          content: JSON.stringify(contentMessageVideo),
+          conversation_id: conversation_info.conversation_id,
+          sender_id: currentUser?._id,
+          recive_id: conversation_info.conversation_members,
+          type: "VIDEO",
+          is_check_conversation: !Object.values(list_messages).length,
+          member_seens: [currentUser?._id],
+          send_time: new Date().getTime(),
+          message_reply,
+        };
+        pushNewMessage(dataVideo);
+        sendNewMessage(dataVideo);
+      }
+
       handleRemoveReplyMessage();
       setFilesInput([]);
       scrollToBottom();
@@ -144,7 +387,7 @@ const InputChat = (props: Props) => {
   };
 
   return (
-    <Row>
+    <Row className="relative">
       {message_reply && (
         <Col
           span={24}
@@ -182,7 +425,7 @@ const InputChat = (props: Props) => {
                 className="border-2 border-black border-dotted"
                 style={{ width: 48, height: 48 }}
               >
-                <label>
+                <label className="relative  w-4 top-4 left-4 cursor-pointer">
                   <AiOutlinePlus />
                   <input
                     onChange={handleChangeFile}
@@ -195,18 +438,12 @@ const InputChat = (props: Props) => {
               </div>
             </div>
             {filesInput?.map((file, index) => (
-              <div key={index} className="mx-3 inline-block relative">
-                <img
-                  style={{ width: 48, height: 48 }}
-                  src={URL.createObjectURL(file)}
-                />
-                <div className="absolute top-0 right-0 text-white cursor-pointer">
-                  <AiFillCloseCircle
-                    size={16}
-                    onClick={() => onRemoveFile(index)}
-                  />
-                </div>
-              </div>
+              <PreviewFileItem
+                key={index}
+                file={file}
+                index={index}
+                onRemoveFile={onRemoveFile}
+              />
             ))}
           </div>
         </Col>
@@ -232,7 +469,16 @@ const InputChat = (props: Props) => {
                 </label>
               </Col>
               <Col>
-                <GrAttachment className="cursor-pointer" size={20} />
+                <label>
+                  <GrAttachment className="cursor-pointer" size={20} />
+                  <input
+                    onChange={handleChangeFile}
+                    type="file"
+                    className="hidden"
+                    multiple
+                    accept={LIST_ATTACH_FILE_TYPE.toString()}
+                  />
+                </label>
               </Col>
             </Row>
           </Col>
@@ -252,13 +498,20 @@ const InputChat = (props: Props) => {
               onChange={(e) => handleChangeValueInput(e)}
             />
           </Col>
-          <Col style={{ alignSelf: "end", height: 24, padding: " 0 12px" }}>
+          <Col
+            className="relative"
+            style={{ alignSelf: "end", height: 24, padding: " 0 12px" }}
+          >
             <Row
               className="items-center justify-around"
               style={{ width: 120, padding: "0 12px" }}
             >
               <Col>
-                <BsEmojiSmile className="cursor-pointer" size={20} />
+                <BsEmojiSmile
+                  className="cursor-pointer"
+                  size={20}
+                  onClick={() => setIsOpenEmoji(!isOpenEmoji)}
+                />
               </Col>
               <Col>
                 <FaMicrophone className="cursor-pointer" size={20} />
@@ -271,7 +524,13 @@ const InputChat = (props: Props) => {
                 />
               </Col>
             </Row>
-            {/* <div className={Styles.showPicker}>{<Picker />}</div> */}
+            {isOpenEmoji && (
+              <ClickOutside onClickOutside={() => setIsOpenEmoji(false)}>
+                <div className="absolute bottom-8 right-6">
+                  <EmojiPicker onEmojiClick={onChangeEmojio} />
+                </div>
+              </ClickOutside>
+            )}
           </Col>
         </Row>
       </Col>

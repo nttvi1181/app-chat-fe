@@ -11,17 +11,23 @@ import {
   setIsSearchChat as setIsSearchChatAction,
   setLoading as setLoadingAction,
   setImagePreview as setImagePreviewAction,
+  isOpenCreateGroupChat as isOpenCreateGroupChatSelector,
+  setIsOpenCreateGroupChat as setIsOpenCreateGroupChatisOpenCreateGroupChatAction,
 } from "../redux/slices/uiSlice";
 
 const useUi = () => {
   const dispatch = useAppDispatch();
   const currentPage = useAppSelector(currentPageSelector);
+  const isOpenCreateGroupChat = useAppSelector(isOpenCreateGroupChatSelector);
   const currentViewProfile = useAppSelector(currentViewProfileSelector);
   const isSearchChat = useAppSelector(isSearchChatSelector);
   const loading = useAppSelector(loadingSelector);
   const imagePreview = useAppSelector(imagePreviewSelector);
   const setCurrentViewProfile = (value: null | Profile) => {
     dispatch(setCurrentViewProfileAction(value));
+  };
+  const setIsOpenCreateGroupChat = (value: boolean) => {
+    dispatch(setIsOpenCreateGroupChatisOpenCreateGroupChatAction(value));
   };
   const setCurrentPage = (value: string) => {
     dispatch(setcurrentPageAction(value));
@@ -42,12 +48,14 @@ const useUi = () => {
     currentViewProfile,
     isSearchChat,
     loading,
+    isOpenCreateGroupChat,
     imagePreview,
     setCurrentViewProfile,
     setCurrentPage,
     setLoading,
     setIsSearchChat,
     setImagePreview,
+    setIsOpenCreateGroupChat,
   };
 };
 
