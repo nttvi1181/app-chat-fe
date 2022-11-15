@@ -13,7 +13,7 @@ type Props = {
   isMessageReply?: boolean;
 };
 
-const ImageMessage = ({
+const VideoMessage = ({
   isOwner,
   content,
   isHeaderMessageOfBlock,
@@ -21,20 +21,16 @@ const ImageMessage = ({
   isMessageReply,
 }: Props) => {
   const files = JSON.parse(content);
-  const { setImagePreview } = useUi();
   return (
     <Row gutter={[4, 4]} className="flex-row-reverse">
       {files?.map((url: string, index: number) => (
-        <Col className="w-32 h-32" key={index}>
+        <Col className="w-96 h-48" key={index}>
           <div className={clsx("rounded-md overflow-hidden w-full h-full")}>
-            <img
+            <video
+              controls
               style={{ objectFit: "cover" }}
               className="w-full h-full"
               src={url}
-              onClick={() => {
-                if (isMessageReply) return;
-                setImagePreview(url);
-              }}
             />
           </div>
         </Col>
@@ -43,4 +39,4 @@ const ImageMessage = ({
   );
 };
 
-export default ImageMessage;
+export default VideoMessage;

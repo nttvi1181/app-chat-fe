@@ -5,6 +5,7 @@ import { Layout } from "antd";
 import Sidebar from "./Sidebar/Sidebar";
 import Content from "./Content";
 import ModalProfile from "@/container/ModalProfile";
+import ModalCreateConversation from "@/container/ModalCreateConversation";
 function Home() {
   const { currentUser, setCurrentUser } = useProfile();
 
@@ -14,6 +15,7 @@ function Home() {
         <Sidebar />
         <Content />
         <ModalProfile />
+        <ModalCreateConversation/>
       </Layout>
     </>
   );

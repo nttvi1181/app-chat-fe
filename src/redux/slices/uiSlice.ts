@@ -8,12 +8,14 @@ const initialState: {
   isSearchChat: boolean;
   loading: boolean;
   imagePreview: string;
+  isOpenCreateGroupChat: boolean;
 } = {
   currentPage: null,
   currentViewProfile: null,
   isSearchChat: false,
   loading: false,
   imagePreview: "",
+  isOpenCreateGroupChat: false,
 };
 
 export const uiSlice = createSlice({
@@ -35,10 +37,15 @@ export const uiSlice = createSlice({
     setImagePreview: (state, { payload }) => {
       state.imagePreview = payload;
     },
+    setIsOpenCreateGroupChat: (state, { payload }) => {
+      state.isOpenCreateGroupChat = payload;
+    },
   },
 });
 
 export const currentPage = (state: AppState) => state.ui.currentPage;
+export const isOpenCreateGroupChat = (state: AppState) =>
+  state.ui.isOpenCreateGroupChat;
 export const loading = (state: AppState) => state.ui.loading;
 export const imagePreview = (state: AppState) => state.ui.imagePreview;
 export const isSearchChat = (state: AppState) => state.ui.isSearchChat;
@@ -51,6 +58,7 @@ export const {
   setIsSearchChat,
   setLoading,
   setImagePreview,
+  setIsOpenCreateGroupChat,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

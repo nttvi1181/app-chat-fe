@@ -4,8 +4,8 @@ import React from "react";
 type Props = {
   className?: string;
   style?: any;
-  src: string | undefined;
-  size: number;
+  src?: string | undefined;
+  size?: number;
   visibility?: boolean;
 };
 

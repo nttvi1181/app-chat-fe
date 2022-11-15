@@ -18,7 +18,6 @@ const Container = styled.div`
   height: 50px;
   width: 100%;
   padding: 5px 20px;
-  border: 1px solid #f1f1f1;
 `;
 
 export default SearchUserChat;
