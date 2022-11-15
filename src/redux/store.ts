@@ -7,6 +7,7 @@ import {
 
 import userReducer from "./slices/userSlice";
 import uiReducer from "./slices/uiSlice";
+import relationReducer from "./slices/relationSlice";
 import chatReducer from "./slices/chatSlice";
 import conversationReducer from "./slices/conversationSlice";
 import searchMessageReducer from "./slices/searchMessageSlice";
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   ui: uiReducer,
   conversation: conversationReducer,
   searchMessage: searchMessageReducer,
+  relation: relationReducer,
 });
 
 export function makeStore() {

@@ -1,22 +1,50 @@
 import React from "react";
 import { Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import { RelationServives } from "@/services/relation.service";
 import styled from "styled-components";
 
-function CardUser() {
+interface PropsType {
+  username?: string;
+  avatar?: string;
+  _id?: string;
+}
+
+const CardUser: React.FC<PropsType> = ({ username, avatar, _id }) => {
+  const handleAddFriend = async (_id: any) => {
+    const res = RelationServives.sendRelation({ recive_id: _id });
+    console.log(res);
+  };
   return (
     <ContainerCard>
       <AvatarUser>
-        <Avatar icon={<UserOutlined />} size={64} />
+        <Avatar
+          icon={
+            <img
+              src={
+                avatar ||
+                "https://www.pngall.com/wp-content/uploads/5/Profile.png"
+              }
+              alt=""
+            />
+          }
+          size={64}
+        />
       </AvatarUser>
-      <TextName>Thoại Nguyễn</TextName>
+      <TextName>{username}</TextName>
       <TextName>
         <span>Từ gợi ý kết bạn chưa có nhóm chung</span>
       </TextName>
-      <BtnAccept>KẾT BẠN</BtnAccept>
+      <BtnAccept
+        onClick={() => {
+          handleAddFriend(_id);
+        }}
+      >
+        KẾT BẠN
+      </BtnAccept>
     </ContainerCard>
   );
-}
+};
 
 const ContainerCard = styled.div`
   height: 300px;

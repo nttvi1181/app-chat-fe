@@ -2,12 +2,27 @@ import Chatpool from "@/components/Chatpool";
 import styled from "styled-components";
 import ListRequestAddFriend from "./ListRequestAddFriend";
 import CardUser from "@/components/cardUser/CardUser";
+import { RelationServives } from "@/services/relation.service";
+import useRelations from "@/hooks/useContact";
+// import { setRelations } from "@/redux/slices/relationSlice";
 import ContactHeaderLayout from "@/components/contactHeaderLayout/ContactHeaderLayout";
-import React from "react";
+import React, { useEffect } from "react";
 
-type Props = {};
+type Props = {
+  data?: any[];
+};
 
-const ChatPoolContainer = (props: Props) => {
+const ChatPoolContainer: React.FC<Props> = ({ data }) => {
+  const { relations, setRelations } = useRelations();
+
+  const handleGetListRelation = async () => {
+    await RelationServives.getAllRequestReceived().then(({ data }) => {
+      setRelations(data);
+    });
+  };
+  useEffect(() => {
+    handleGetListRelation();
+  }, []);
   return (
     <div style={{ overflow: "hidden", height: "100vh" }}>
       <ContactHeaderLayout />
@@ -16,16 +31,14 @@ const ChatPoolContainer = (props: Props) => {
         <ListRequestAddFriend />
         <TextRequestFriend>Gợi ý kết bạn(99)</TextRequestFriend>
         <ListCard>
-          <CardUser />
-          <CardUser />
-          <CardUser />
-          <CardUser />
-          <CardUser />
-          <CardUser />
-          <CardUser />
-          <CardUser />
-          <CardUser />
-          <CardUser />
+          {data?.map(({ _id, avatar_url, username }) => (
+            <CardUser
+              key={_id}
+              _id={_id}
+              username={username}
+              avatar={avatar_url}
+            />
+          ))}
         </ListCard>
       </MainLayout>
     </div>

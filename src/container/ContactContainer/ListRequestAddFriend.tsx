@@ -1,23 +1,65 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { FaUserCircle } from "react-icons/fa";
+import { RelationServives } from "@/services/relation.service";
 import styled from "styled-components";
 
 function ListRequestAddFriend() {
+  const [listRequest, setListRequest] = useState<any>();
+  const handleAccept = async (_id: any) => {
+    const res = await RelationServives.acceptRelation(_id);
+    console.log(res);
+  };
+  useEffect(() => {
+    const getListRequest = async () => {
+      try {
+        await RelationServives.getAllRequestReceived().then(({ data }) => {
+          setListRequest(data);
+          console.log(data);
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getListRequest();
+  }, []);
+
   return (
-    <ItemContainer>
-      <AvatarRequestNews>
-        <Avatar size={64} icon={<UserOutlined />} />
-        <NameUser>
-          Thoại Đz <p>Từ số điện thoại</p>
-        </NameUser>
-      </AvatarRequestNews>
-      <BtnRequest>
-        <button>Bỏ qua</button>
-        <button>Đồng ý</button>
-      </BtnRequest>
-    </ItemContainer>
+    <>
+      {listRequest &&
+        listRequest.map(({ avatar_url, _id }: any) => (
+          <ItemContainer key={_id}>
+            <AvatarRequestNews>
+              <Avatar
+                size={64}
+                icon={
+                  <img
+                    src={
+                      avatar_url ||
+                      "https://www.pngall.com/wp-content/uploads/5/Profile.png"
+                    }
+                    alt=""
+                  />
+                }
+              />
+              <NameUser>
+                Thoại Đz <p>Từ số điện thoại</p>
+              </NameUser>
+            </AvatarRequestNews>
+            <BtnRequest>
+              <button>Bỏ qua</button>
+              <button
+                onClick={() => {
+                  handleAccept(_id);
+                }}
+              >
+                Đồng ý
+              </button>
+            </BtnRequest>
+          </ItemContainer>
+        ))}
+    </>
   );
 }
 
