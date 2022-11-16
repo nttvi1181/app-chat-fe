@@ -6,8 +6,10 @@ import Sidebar from "./Sidebar/Sidebar";
 import Content from "./Content";
 import ModalProfile from "@/container/ModalProfile";
 import ModalCreateConversation from "@/container/ModalCreateConversation";
+import ModaAddMemberConversation from "@/container/ModaAddMemberConversation";
+import useUi from "@/hooks/useUi";
 function Home() {
-  const { currentUser, setCurrentUser } = useProfile();
+  const { addMemberGroupChat } = useUi();
 
   return (
     <>
@@ -15,7 +17,8 @@ function Home() {
         <Sidebar />
         <Content />
         <ModalProfile />
-        <ModalCreateConversation/>
+        <ModalCreateConversation />
+        {addMemberGroupChat && <ModaAddMemberConversation />}
       </Layout>
     </>
   );

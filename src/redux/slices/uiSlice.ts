@@ -9,6 +9,7 @@ const initialState: {
   loading: boolean;
   imagePreview: string;
   isOpenCreateGroupChat: boolean;
+  addMemberGroupChat: null | any;
 } = {
   currentPage: null,
   currentViewProfile: null,
@@ -16,6 +17,7 @@ const initialState: {
   loading: false,
   imagePreview: "",
   isOpenCreateGroupChat: false,
+  addMemberGroupChat: null,
 };
 
 export const uiSlice = createSlice({
@@ -40,9 +42,13 @@ export const uiSlice = createSlice({
     setIsOpenCreateGroupChat: (state, { payload }) => {
       state.isOpenCreateGroupChat = payload;
     },
+    setIsOpenAddMemberGroupChat: (state, { payload }) => {
+      state.addMemberGroupChat = payload;
+    },
   },
 });
 
+export const addMemberGroupChat = (state: AppState) => state.ui.addMemberGroupChat;
 export const currentPage = (state: AppState) => state.ui.currentPage;
 export const isOpenCreateGroupChat = (state: AppState) =>
   state.ui.isOpenCreateGroupChat;
@@ -59,6 +65,7 @@ export const {
   setLoading,
   setImagePreview,
   setIsOpenCreateGroupChat,
+  setIsOpenAddMemberGroupChat,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

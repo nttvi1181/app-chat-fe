@@ -9,6 +9,7 @@ import moment from "moment";
 import styled from "styled-components";
 import { SocketService } from "@/services/socket-io";
 import useQueryListMessageByConversationId from "@/hooks/useQueryListMessageByConversationId";
+import { ConversationService } from "@/services/conversation.service";
 
 type Props = {};
 const TIME_MESSAGE_CONSECUTIVE = 60; //seconds
