@@ -1,7 +1,7 @@
 import axios from "axios";
 import { disconnectSocket } from "./socket-io";
-// const baseURL = "https://api-app-chat-be.herokuapp.com/api/v1";
-const baseURL = "http://192.168.10.138:8080/api/v1";
+const baseURL = "https://api-app-chat-be.herokuapp.com/api/v1";
+// const baseURL = "http://192.168.10.138:8080/api/v1";
 // const baseURL = "http://192.168.0.103:8080/api/v1";
 
 const http = axios.create({
