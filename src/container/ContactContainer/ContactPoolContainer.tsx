@@ -6,30 +6,39 @@ import { RelationServives } from "@/services/relation.service";
 import useRelations from "@/hooks/useContact";
 // import { setRelations } from "@/redux/slices/relationSlice";
 import ContactHeaderLayout from "@/components/contactHeaderLayout/ContactHeaderLayout";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
   data?: any[];
 };
 
 const ChatPoolContainer: React.FC<Props> = ({ data }) => {
-  const { relations, setRelations } = useRelations();
+  const [listRequest, setListRequest] = useState<any>();
 
-  const handleGetListRelation = async () => {
-    await RelationServives.getAllRequestReceived().then(({ data }) => {
-      setRelations(data);
-    });
-  };
   useEffect(() => {
-    handleGetListRelation();
+    const getListRequest = async () => {
+      try {
+        await RelationServives.getAllRequestReceived().then(({ data }) => {
+          setListRequest(data);
+          console.log(data);
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getListRequest();
   }, []);
   return (
     <div style={{ overflow: "hidden", height: "100vh" }}>
       <ContactHeaderLayout />
       <MainLayout>
-        <TextRequestFriend>Lời mời kết bạn(1)</TextRequestFriend>
-        <ListRequestAddFriend />
-        <TextRequestFriend>Gợi ý kết bạn(99)</TextRequestFriend>
+        <TextRequestFriend>
+          Lời mời kết bạn({listRequest?.length || 0})
+        </TextRequestFriend>
+        <ListRequestAddFriend listRequest={listRequest} />
+        <TextRequestFriend>
+          Gợi ý kết bạn({data?.length || 0})
+        </TextRequestFriend>
         <ListCard>
           {data?.map(({ _id, avatar_url, username }) => (
             <CardUser

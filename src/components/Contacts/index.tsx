@@ -1,7 +1,6 @@
 import SearchUserChat from "@/components/searchUserChat/SearchUserChat";
 import React from "react";
 import Styles from "./style.module.scss";
-import Avatar from "../../assets/images/dejong.jpg";
 import ContactItem from "./ContactItem";
 import { Profile } from "@/interfaces/user";
 import useProfile from "@/hooks/useProfile";
@@ -17,25 +16,45 @@ const Contacts = ({ data }: Props) => {
   const { currentUser } = useProfile();
   const { setChatDetailInfo } = useChatDetail();
   const { setCurrentPage } = useUi();
+  console.log({ currentUser });
 
-  const handleClickContactItem = (profile: Profile) => {
+  const handleClickContactItem = (profile: any) => {
     if (!currentUser) return;
-    const conversation_id = createConversationId([
-      currentUser._id,
-      profile._id,
-    ]);
-    const data = {
-      conversation_info: {
-        conversation_id: conversation_id,
-        origin_conversation_id: null,
-        conversation_name: profile?.username,
-        conversation_avatar: [profile?.avatar_url],
-        conversation_members: [currentUser._id, profile._id],
-      },
-      list_messages: [],
-    };
-    setChatDetailInfo(data);
-    setCurrentPage("CHAT");
+    if (currentUser._id === profile.recive_id._id) {
+      const conversation_id = createConversationId([
+        currentUser._id,
+        profile.sender_id._id,
+      ]);
+      const data = {
+        conversation_info: {
+          conversation_id: conversation_id,
+          origin_conversation_id: null,
+          conversation_name: profile?.sender_id?.username,
+          conversation_avatar: [profile?.sender_id?.avatar_url],
+          conversation_members: [currentUser._id, profile?.sender_id?._id],
+        },
+        list_messages: [],
+      };
+      setChatDetailInfo(data);
+      setCurrentPage("CHAT");
+    } else {
+      const conversation_id = createConversationId([
+        currentUser._id,
+        profile?.recive_id._id,
+      ]);
+      const data = {
+        conversation_info: {
+          conversation_id: conversation_id,
+          origin_conversation_id: null,
+          conversation_name: profile?.recive_id.username,
+          conversation_avatar: [profile?.recive_id.avatar_url],
+          conversation_members: [currentUser._id, profile?.recive_id._id],
+        },
+        list_messages: [],
+      };
+      setChatDetailInfo(data);
+      setCurrentPage("CHAT");
+    }
   };
 
   return (
@@ -43,7 +62,7 @@ const Contacts = ({ data }: Props) => {
       <SearchUserChat />
       <div>
         {data
-          ?.filter((pr) => pr._id !== currentUser?._id)
+          // ?.filter((pr) => pr._id !== currentUser?._id)
           ?.map((profile) => (
             <ContactItem
               key={profile._id}
