@@ -1,5 +1,5 @@
 import * as io from "socket.io-client";
-const baseURL = "http://api-app-chat-be.herokuapp.com";
+const baseURL = "https://api-app-chat-be.herokuapp.com";
 // const baseURL = "http://192.168.0.103:8080";
 
 const connectSocket = () => {
