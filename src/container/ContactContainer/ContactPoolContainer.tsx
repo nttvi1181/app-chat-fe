@@ -6,23 +6,23 @@ import { RelationServives } from "@/services/relation.service";
 import useRelations from "@/hooks/useContact";
 // import { setRelations } from "@/redux/slices/relationSlice";
 import ContactHeaderLayout from "@/components/contactHeaderLayout/ContactHeaderLayout";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
   data?: any[];
 };
 
 const ChatPoolContainer: React.FC<Props> = ({ data }) => {
-  const { relations, setRelations } = useRelations();
+  const [listRequest, setListRequest] = useState<any>([]);
 
-  const handleGetListRelation = async () => {
-    await RelationServives.getAllRequestReceived().then(({ data }) => {
-      setRelations(data);
-    });
-  };
-  useEffect(() => {
-    handleGetListRelation();
-  }, []);
+  // const handleGetListRelation = async () => {
+  //   await RelationServives.getAllRequestReceived().then(({ data }) => {
+  //     setListRequest(data);
+  //   });
+  // };
+  // useEffect(() => {
+  //   handleGetListRelation();
+  // }, []);
   return (
     <div style={{ overflow: "hidden", height: "100vh" }}>
       <ContactHeaderLayout />

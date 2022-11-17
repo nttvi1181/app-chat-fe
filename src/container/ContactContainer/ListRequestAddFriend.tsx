@@ -8,8 +8,7 @@ import styled from "styled-components";
 function ListRequestAddFriend() {
   const [listRequest, setListRequest] = useState<any>();
   const handleAccept = async (_id: any) => {
-    const res = await RelationServives.acceptRelation(_id);
-    console.log(res);
+    const res = await RelationServives.acceptRelation({ sender_id: _id });
   };
   useEffect(() => {
     const getListRequest = async () => {
@@ -28,7 +27,7 @@ function ListRequestAddFriend() {
   return (
     <>
       {listRequest &&
-        listRequest.map(({ avatar_url, _id }: any) => (
+        listRequest.map(({ _id, sender_id }: any) => (
           <ItemContainer key={_id}>
             <AvatarRequestNews>
               <Avatar
@@ -36,7 +35,7 @@ function ListRequestAddFriend() {
                 icon={
                   <img
                     src={
-                      avatar_url ||
+                      sender_id?.avatar_url ||
                       "https://www.pngall.com/wp-content/uploads/5/Profile.png"
                     }
                     alt=""
@@ -44,14 +43,15 @@ function ListRequestAddFriend() {
                 }
               />
               <NameUser>
-                Thoại Đz <p>Từ số điện thoại</p>
+                {sender_id?.username || `Thoai Nguyen`}
+                <p>Từ số điện thoại</p>
               </NameUser>
             </AvatarRequestNews>
             <BtnRequest>
               <button>Bỏ qua</button>
               <button
                 onClick={() => {
-                  handleAccept(_id);
+                  handleAccept(sender_id._id);
                 }}
               >
                 Đồng ý
