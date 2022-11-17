@@ -5,9 +5,10 @@ import { FaUserCircle } from "react-icons/fa";
 import { RelationServives } from "@/services/relation.service";
 import styled from "styled-components";
 
-function ListRequestAddFriend({ listRequest }: any) {
+function ListRequestAddFriend({ listRequest, renderStatus }: any) {
   const handleAccept = async (_id: any) => {
     const res = await RelationServives.acceptRelation({ sender_id: _id });
+    renderStatus();
   };
 
   return (

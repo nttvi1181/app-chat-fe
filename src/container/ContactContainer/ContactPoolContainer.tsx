@@ -14,7 +14,6 @@ type Props = {
 
 const ChatPoolContainer: React.FC<Props> = ({ data }) => {
   const [listRequest, setListRequest] = useState<any>();
-
   useEffect(() => {
     const getListRequest = async () => {
       try {
@@ -28,6 +27,7 @@ const ChatPoolContainer: React.FC<Props> = ({ data }) => {
     };
     getListRequest();
   }, []);
+
   return (
     <div style={{ overflow: "hidden", height: "100vh" }}>
       <ContactHeaderLayout />

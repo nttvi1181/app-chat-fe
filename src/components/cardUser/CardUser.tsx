@@ -13,7 +13,6 @@ interface PropsType {
 const CardUser: React.FC<PropsType> = ({ username, avatar, _id }) => {
   const handleAddFriend = async (_id: any) => {
     const res = RelationServives.sendRelation({ recive_id: _id });
-    console.log(res);
   };
   return (
     <ContainerCard>
