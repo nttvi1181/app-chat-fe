@@ -244,6 +244,16 @@ const ChatDetailItem = ({
             isMessageReply
           />
         );
+      case "ATTACH":
+        return (
+          <FileAttachment
+            isHeaderMessageOfBlock={isHeaderMessageOfBlock}
+            isFinalMessageOfBlock={isFinalMessageOfBlock}
+            isOwner={isOwner}
+            content={message_reply?.content}
+            isMessageReply
+          />
+        );
     }
   };
 

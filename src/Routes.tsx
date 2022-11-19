@@ -9,6 +9,7 @@ import useUi from "@/hooks/useUi";
 import { FiDownload } from "react-icons/fi";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { dowloadFile } from "@/utils/helper";
+import VerifyContainer from "@/container/VerifyContainer";
 
 function Main() {
   const { loading, imagePreview, setImagePreview } = useUi();
@@ -51,6 +52,7 @@ function Main() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/verify" element={<VerifyContainer />} />
             <Route path="/" element={<Home />} />
           </Routes>
         </BrowserRouter>

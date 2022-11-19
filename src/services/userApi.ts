@@ -22,6 +22,13 @@ const UserService = {
     return await HttpRequest.post("/user/search", data);
   },
 
+  getOtp: async () => {
+    return await HttpRequest.get("/user/code_verify");
+  },
+  verifyOtp: async (data: { code: string }) => {
+    return await HttpRequest.post("/user/code_verify", data);
+  },
+
   getMyinfo: async () => {
     return await HttpRequest.get("/user/myinfo");
   },
