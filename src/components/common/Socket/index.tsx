@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import useChatDetail from "@/hooks/useChatDetail";
 import { ConversationService } from "@/services/conversation.service";
 import useConversations from "@/hooks/useConversations";
+import useUi from "@/hooks/useUi";
 
 type Props = {};
 
@@ -18,6 +19,7 @@ const Socket = (props: Props) => {
     setConversationInfo,
   } = useChatDetail();
   const { setConversations } = useConversations();
+  const { setIsOpenAddMemberGroupChat } = useUi();
 
   const handleGetConversations = async () => {
     try {
@@ -86,6 +88,38 @@ const Socket = (props: Props) => {
       handleGetConversations();
     });
 
+    socket.on("SERVER_SEND_ADD_MEMBER_TO_CONVERSATION", (data: any) => {
+      if (
+        conversation_info.conversation_id &&
+        conversation_info.conversation_id === data.conversation_id
+      ) {
+        setConversationInfo({
+          ...conversation_info,
+          conversation_members: data.members,
+          conversation_id: data.conversation_id,
+        });
+      }
+      handleGetConversations();
+      setIsOpenAddMemberGroupChat(null);
+      window.location.reload();
+    });
+
+    socket.on("SERVER_SEND_REMOVE_MEMBER_TO_CONVERSATION", (data: any) => {
+      if (
+        conversation_info.conversation_id &&
+        conversation_info.conversation_id === data.conversation_id
+      ) {
+        setConversationInfo({
+          ...conversation_info,
+          conversation_members: data.members,
+          conversation_id: data.conversation_id,
+        });
+      }
+      handleGetConversations();
+      setIsOpenAddMemberGroupChat(null);
+      window.location.reload();
+    });
+
     socket.on("SERVER_SEND_SEEN_MESSAGE", (data: any) => {
       if (
         conversation_info.conversation_id &&
@@ -141,6 +175,8 @@ const Socket = (props: Props) => {
 
     return () => {
       socket.off("SERVER_SEND_NEW_MESSAGE");
+      socket.off("SERVER_SEND_ADD_MEMBER_TO_CONVERSATION");
+      socket.off("SERVER_SEND_REMOVE_MEMBER_TO_CONVERSATION");
       socket.off("SERVER_SEND_DELETE_MESSAGE");
       socket.off("CLIENT_SEND_MESSAGE_ERROR");
       socket.off("SERVER_SEND_UNPIN_MESSAGE");

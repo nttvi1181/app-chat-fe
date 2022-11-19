@@ -2,6 +2,7 @@ import { Profile } from "@interfaces/user";
 import { useAppDispatch, useAppSelector } from ".";
 import {
   currentPage as currentPageSelector,
+  addMemberGroupChat as addMemberGroupChatSelector,
   loading as loadingSelector,
   imagePreview as imagePreviewSelector,
   isSearchChat as isSearchChatSelector,
@@ -13,6 +14,7 @@ import {
   setImagePreview as setImagePreviewAction,
   isOpenCreateGroupChat as isOpenCreateGroupChatSelector,
   setIsOpenCreateGroupChat as setIsOpenCreateGroupChatisOpenCreateGroupChatAction,
+  setIsOpenAddMemberGroupChat as setIsOpenAddMemberGroupChatAction,
 } from "../redux/slices/uiSlice";
 
 const useUi = () => {
@@ -23,6 +25,7 @@ const useUi = () => {
   const isSearchChat = useAppSelector(isSearchChatSelector);
   const loading = useAppSelector(loadingSelector);
   const imagePreview = useAppSelector(imagePreviewSelector);
+  const addMemberGroupChat = useAppSelector(addMemberGroupChatSelector);
   const setCurrentViewProfile = (value: null | Profile) => {
     dispatch(setCurrentViewProfileAction(value));
   };
@@ -43,12 +46,17 @@ const useUi = () => {
     dispatch(setImagePreviewAction(value));
   };
 
+  const setIsOpenAddMemberGroupChat = (value: any) => {
+    dispatch(setIsOpenAddMemberGroupChatAction(value));
+  };
+
   return {
     currentPage,
     currentViewProfile,
     isSearchChat,
     loading,
     isOpenCreateGroupChat,
+    addMemberGroupChat,
     imagePreview,
     setCurrentViewProfile,
     setCurrentPage,
@@ -56,6 +64,7 @@ const useUi = () => {
     setIsSearchChat,
     setImagePreview,
     setIsOpenCreateGroupChat,
+    setIsOpenAddMemberGroupChat,
   };
 };
 

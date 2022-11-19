@@ -22,12 +22,9 @@ import useAuth from "@/hooks/useAuth";
 function Register() {
   const { onRegister } = useAuth();
   const formik = useFormik({
-    initialValues: {
-      gender: "Nam",
-    },
+    initialValues: {},
     onSubmit: (values: any) => {
-      // onRegister(values);
-      console.log(values);
+      onRegister(values);
     },
   });
   return (
