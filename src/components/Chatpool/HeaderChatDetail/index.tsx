@@ -5,12 +5,14 @@ import React from "react";
 import CustomAvatar from "@/components/common/CustomAvatar";
 import { BsSearch } from "react-icons/bs";
 import useUi from "@/hooks/useUi";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
 
 type Props = {};
 
 const HeaderChatDetail = (props: Props) => {
   const { conversation_info } = useChatDetail();
-  const { setIsSearchChat } = useUi();
+  const { setIsSearchChat, setIsOpenAddMemberGroupChat } = useUi();
+  const { setIsOpenCreateGroupChat } = useUi();
 
   return (
     <Row justify="space-between" className="items-center relative">
@@ -56,12 +58,23 @@ const HeaderChatDetail = (props: Props) => {
             </Row>
           </Col>
           <Col span={4}>
-            <Row className="justify-center items-center" style={{ height: 64 }}>
+            <Row
+              className="justify-center items-center"
+              style={{ height: 64 }}
+              gutter={16}
+            >
               <Col>
                 <BsSearch
                   className="cursor-pointer"
                   size={16}
                   onClick={() => setIsSearchChat(true)}
+                />
+              </Col>
+              <Col>
+                <AiOutlineUsergroupAdd
+                  className="cursor-pointer"
+                  size={24}
+                  onClick={() => setIsOpenAddMemberGroupChat(conversation_info)}
                 />
               </Col>
             </Row>

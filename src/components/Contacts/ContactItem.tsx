@@ -4,22 +4,26 @@ import { Profile } from "@/interfaces/user";
 import { Avatar } from "antd";
 
 type Props = {
-  profile: Profile;
+  profile: any;
   onClick: (data: Profile) => void;
 };
 
 const ContactItem = ({ profile, onClick }: Props) => {
   const handleClickItem = () => onClick(profile);
+  console.log({ profile });
 
   return (
     <div className={Styles.listItem} onClick={handleClickItem}>
       <div className="pr-2">
-        <Avatar size={48} src={profile.avatar_url || "/avatar-default.png"}>
-          {profile.username}
+        <Avatar
+          size={48}
+          src={profile?.sender_id?.avatar_url || "/avatar-default.png"}
+        >
+          {profile?.sender_id?.username}
         </Avatar>
       </div>
       <div>
-        <div className={Styles.nameChat}>{profile.username}</div>
+        <div className={Styles.nameChat}>{profile?.sender_id?.username}</div>
       </div>
     </div>
   );

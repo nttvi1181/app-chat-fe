@@ -1,23 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { FaUserCircle } from "react-icons/fa";
+import { RelationServives } from "@/services/relation.service";
 import styled from "styled-components";
 
-function ListRequestAddFriend() {
+function ListRequestAddFriend({ listRequest, renderStatus }: any) {
+  const handleAccept = async (_id: any) => {
+    const res = await RelationServives.acceptRelation({ sender_id: _id });
+    renderStatus();
+  };
+
   return (
-    <ItemContainer>
-      <AvatarRequestNews>
-        <Avatar size={64} icon={<UserOutlined />} />
-        <NameUser>
-          Thoại Đz <p>Từ số điện thoại</p>
-        </NameUser>
-      </AvatarRequestNews>
-      <BtnRequest>
-        <button>Bỏ qua</button>
-        <button>Đồng ý</button>
-      </BtnRequest>
-    </ItemContainer>
+    <>
+      {listRequest &&
+        listRequest.map(({ _id, sender_id }: any) => (
+          <ItemContainer key={_id}>
+            <AvatarRequestNews>
+              <Avatar
+                size={64}
+                icon={
+                  <img
+                    src={
+                      sender_id?.avatar_url ||
+                      "https://www.pngall.com/wp-content/uploads/5/Profile.png"
+                    }
+                    alt=""
+                  />
+                }
+              />
+              <NameUser>
+                {sender_id?.username || `Thoai Nguyen`}
+                <p>Từ số điện thoại</p>
+              </NameUser>
+            </AvatarRequestNews>
+            <BtnRequest>
+              <button>Bỏ qua</button>
+              <button
+                onClick={() => {
+                  handleAccept(sender_id._id);
+                }}
+              >
+                Đồng ý
+              </button>
+            </BtnRequest>
+          </ItemContainer>
+        ))}
+    </>
   );
 }
 
