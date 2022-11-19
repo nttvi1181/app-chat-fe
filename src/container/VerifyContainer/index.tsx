@@ -1,6 +1,6 @@
 import useProfile from "@/hooks/useProfile";
 import withAuth from "@/components/common/WithAuth/WithAuth";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import OTPInput from "react-otp-input";
 import "./style.css";
 import useAuth from "@/hooks/useAuth";
@@ -14,11 +14,36 @@ const VerifyContainer = (props: Props) => {
   const { onLogout } = useAuth();
   const [otp, setOtp] = useState("");
   const { currentUser } = useProfile();
-  useEffect(() => {}, []);
+  const [timer, setTimer] = useState(0);
+  const Ref = useRef<any>(null);
+  const getTimeRemaining = () => {
+    const seconds = Math.floor(timer % 60);
+    const minutes = Math.floor((timer / 60) % 60);
+    const t =
+      (minutes > 9 ? minutes : "0" + minutes) +
+      ":" +
+      (seconds > 9 ? seconds : "0" + seconds);
+    return t;
+  };
+
+  const clearTimer = () => {
+    if (Ref.current) clearInterval(Ref.current);
+    const id = setInterval(() => {
+      if (timer === 0) {
+        clearInterval(Ref.current);
+      }
+      setTimer((prev) => prev - 1);
+    }, 1000);
+    Ref.current = id;
+  };
 
   const handleGetOtp = async () => {
     try {
       const { data } = await UserService.getOtp();
+      setTimer(300);
+      setTimeout(() => {
+        clearTimer();
+      }, 200);
     } catch (error) {
       console.log(error);
     }
@@ -39,8 +64,15 @@ const VerifyContainer = (props: Props) => {
   }
   const showPhone = (phone: string) => {
     const phoneArray = phone.split("");
-    phoneArray.splice(phoneArray.length - 4, phoneArray.length, "*", "*", "*","*");
-    return phoneArray
+    phoneArray.splice(
+      phoneArray.length - 4,
+      phoneArray.length,
+      "*",
+      "*",
+      "*",
+      "*"
+    );
+    return phoneArray;
   };
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -71,9 +103,14 @@ const VerifyContainer = (props: Props) => {
               </div>
               <p className="p3">Không nhận được mã?</p>
               <div className="flex justify-between w-full">
-                <p className="resend cursor-pointer" onClick={handleGetOtp}>
-                  Gửi lại
-                </p>
+                {timer ? (
+                  <span className=" text-white">{getTimeRemaining()}</span>
+                ) : (
+                  <p className="resend cursor-pointer" onClick={handleGetOtp}>
+                    Gửi lại
+                  </p>
+                )}
+
                 <p className="resend cursor-pointer" onClick={() => onLogout()}>
                   Thoát
                 </p>
