@@ -16,6 +16,11 @@ const VerifyContainer = (props: Props) => {
   const { currentUser } = useProfile();
   const [timer, setTimer] = useState(0);
   const Ref = useRef<any>(null);
+
+  useEffect(() => {
+    handleGetOtp();
+  }, []);
+
   const getTimeRemaining = () => {
     const seconds = Math.floor(timer % 60);
     const minutes = Math.floor((timer / 60) % 60);
