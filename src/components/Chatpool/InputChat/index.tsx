@@ -534,7 +534,7 @@ const InputChat = (props: Props) => {
           </Col>
         </Row>
       </Col>
-      <div className="absolute h-9 bottom-8 right-0 left-0  bg-white"></div>
+      {/* <div className="absolute h-9 bottom-8 right-0 left-0  bg-white"></div>
       <div className="absolute h-9 bottom-8 right-14 left-9  bg-sky-500 rounded-3xl audio_progress">
         <div className="absolute top-1 -left-6">
           <RiCloseCircleFill size={20} />
@@ -542,7 +542,7 @@ const InputChat = (props: Props) => {
         <div className="absolute w-12 right-1 top-1 h-7 bg-white rounded-3xl flex items-center justify-center">
           <span>00:11</span>
         </div>
-      </div>
+      </div> */}
     </Row>
   );
 };
