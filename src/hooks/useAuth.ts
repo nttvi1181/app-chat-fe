@@ -24,7 +24,8 @@ const useAuth = () => {
       localStorage.setItem("_refresh_token", data.refreshAccessToken);
       navigate("/");
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
+      message.error(error?.response?.data?.message);
       setError(error);
     }
   };
