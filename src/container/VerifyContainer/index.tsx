@@ -15,6 +15,7 @@ const VerifyContainer = (props: Props) => {
   const [otp, setOtp] = useState("");
   const { currentUser } = useProfile();
   const [timer, setTimer] = useState(0);
+  const RefTimer = useRef<any>(0);
   const Ref = useRef<any>(null);
 
   useEffect(() => {
@@ -33,22 +34,23 @@ const VerifyContainer = (props: Props) => {
 
   const clearTimer = () => {
     if (Ref.current) clearInterval(Ref.current);
-    const id = setInterval(() => {
-      if (timer === 0) {
+    Ref.current = setInterval(() => {
+      if (RefTimer.current === 0) {
         clearInterval(Ref.current);
       }
       setTimer((prev) => prev - 1);
+      RefTimer.current = RefTimer.current - 1;
     }, 1000);
-    Ref.current = id;
   };
 
   const handleGetOtp = async () => {
     try {
       const { data } = await UserService.getOtp();
       setTimer(300);
+      RefTimer.current = 300;
       setTimeout(() => {
         clearTimer();
-      }, 200);
+      }, 1000);
     } catch (error) {
       console.log(error);
     }
@@ -68,16 +70,16 @@ const VerifyContainer = (props: Props) => {
     setOtp(OTP);
   }
   const showPhone = (phone: string) => {
-    const phoneArray = phone.split("");
-    phoneArray.splice(
-      phoneArray.length - 4,
-      phoneArray.length,
-      "*",
-      "*",
-      "*",
-      "*"
-    );
-    return phoneArray;
+    // const phoneArray = phone.split("");
+    // phoneArray.splice(
+    //   phoneArray.length - 4,
+    //   phoneArray.length,
+    //   "*",
+    //   "*",
+    //   "*",
+    //   "*"
+    // );
+    return phone;
   };
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -90,10 +92,10 @@ const VerifyContainer = (props: Props) => {
         </div> */}
         <div className="mt-5" style={{ backgroundColor: "#2b6350" }}>
           <div className="verifyDiv">
-            <p className="p1">Xác minh số điện thoại</p>
+            <p className="p1">Xác minh tài khoản</p>
             <p className="p2">
-              Một mã otp đã được gửi vào số điện thoại{" "}
-              {showPhone(currentUser?.phone ?? "")}
+              Một mã otp đã được gửi vào email{" "}
+              {showPhone(currentUser?.email ?? "")}
             </p>
             <div className="otpElements">
               <p className="p3">Nhập mã:</p>
@@ -106,15 +108,20 @@ const VerifyContainer = (props: Props) => {
                   separator={<span></span>}
                 />
               </div>
-              <p className="p3">Không nhận được mã?</p>
+              <div className="flex">
+                <p className="p3">Không nhận được mã?</p>
+                <p
+                  className="resend cursor-pointer ml-3"
+                  onClick={handleGetOtp}
+                >
+                  Gửi lại
+                </p>
+              </div>
+
               <div className="flex justify-between w-full">
                 {timer ? (
                   <span className=" text-white">{getTimeRemaining()}</span>
-                ) : (
-                  <p className="resend cursor-pointer" onClick={handleGetOtp}>
-                    Gửi lại
-                  </p>
-                )}
+                ) : null}
 
                 <p className="resend cursor-pointer" onClick={() => onLogout()}>
                   Thoát

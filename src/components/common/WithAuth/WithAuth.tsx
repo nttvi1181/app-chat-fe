@@ -45,12 +45,12 @@ const withAuth =
     if (loading) {
       return <Loading />;
     }
-    // if (isAuthenticated && currentUser && !currentUser.is_verified && pathname !== "/verify") {
-    //   return navigate("/verify");
-    // }
-    // if (isAuthenticated && currentUser && currentUser.is_verified && pathname === "/verify") {
-    //   return navigate("/");
-    // }
+    if (isAuthenticated && currentUser && !currentUser.is_verified && pathname !== "/verify") {
+      return navigate("/verify");
+    }
+    if (isAuthenticated && currentUser && currentUser.is_verified && pathname === "/verify") {
+      return navigate("/");
+    }
 
     if (isAuthenticated && PublicRoute.includes(pathname)) {
       return navigate("/");
