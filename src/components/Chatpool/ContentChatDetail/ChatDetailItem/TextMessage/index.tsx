@@ -50,7 +50,7 @@ const TextMessage = ({
           ? "#f6f9fa"
           : !isOwner
           ? "#e4e6eb"
-          : "#0084ff",
+          : "#F1B792",
         color: isMessageReply ? "#65676b" : !isOwner ? "#050505" : "#fff",
         whiteSpace: "pre-wrap",
       }}

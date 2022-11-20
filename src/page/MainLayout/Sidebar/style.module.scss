@@ -2,7 +2,7 @@
 
 .main {
   height: 100vh;
-  background-color: #0091ff;
+  background-color: #f7cdb3;
   @include flexCenter(flex, center, space-between);
   flex-direction: column;
 }

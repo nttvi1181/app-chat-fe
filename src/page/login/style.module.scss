@@ -1,5 +1,8 @@
 .main {
-  background-image: url("../../assets/images/background.svg");
+  background-image: url("../../assets/images/background.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   height: 100vh;
   width: 100%;
   text-align: center;
@@ -10,7 +13,7 @@
 }
 
 .headerTitle {
-  color: #0169ff;
+  color: #feb94c;
   font-weight: 500;
   text-align: center;
   font-size: 38px;
@@ -48,13 +51,13 @@
 }
 .btnLogin {
   color: white;
-  background-color: #80c8f9;
+  background-color: #eaa644;
   text-align: center;
   font-weight: 500;
   padding-top: 8px;
 }
 .btnRequest {
-  color: #80c8f9;
+  color: #febd47;
   background-color: white;
   text-align: center;
   font-weight: 500;
@@ -63,4 +66,12 @@
 }
 .footerNoAccount {
   margin-top: 20px;
+  a {
+    color: white;
+  }
+}
+
+.imgQR {
+  height: 270px;
+  width: 270px;
 }

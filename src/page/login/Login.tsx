@@ -29,9 +29,9 @@ function Login() {
     <>
       {loading && <Loading />}
       <div className={clsx(Styles.main, loading && Styles.loading)}>
-        <div className={`${Styles.headerTitle} mt-40`}>Zalo</div>
+        <div className={`${Styles.headerTitle} mt-40`}>CusCare</div>
         <div className={Styles.title}>
-          Đăng nhập tài khoản Zalo để kết nối với ứng dụng Zalo Web
+          Đăng ký tài khoản chăm sóc khách hàng
         </div>
         <div className={`${Styles.form} mt-20`}>
           <Tabs
@@ -42,7 +42,11 @@ function Login() {
             size="large"
           >
             <Tabs.TabPane tab="VỚI MÃ QR" key="1">
-              Content of Tab Pane 1
+              <img
+                src="https://www.qrstuff.com/images/default_qrcode.png"
+                alt=""
+                className={Styles.imgQR}
+              />
             </Tabs.TabPane>
             <Tabs.TabPane tab="VỚI SỐ ĐIỆN THOẠI" key="2">
               <form onSubmit={formik.handleSubmit}>
