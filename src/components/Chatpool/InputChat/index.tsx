@@ -182,27 +182,27 @@ const InputChat = (props: Props) => {
       );
       console.log(responseFilePDF);
       const contentMessageAttachPDF = responseFilePDF?.map((item: any) => ({
-        url: item?.data?.url,
+        url: item?.data?.secure_url,
         size: item?.data?.bytes,
         name: item?.data?.name,
       }));
       const contentMessageAttachDOCX = responseFileDOCX?.map((item: any) => ({
-        url: item?.data?.url,
+        url: item?.data?.secure_url,
         size: item?.data?.bytes,
         name: item?.data?.name,
       }));
       const contentMessageAttachPPT = responseFilePPT?.map((item: any) => ({
-        url: item?.data?.url,
+        url: item?.data?.secure_url,
         size: item?.data?.bytes,
         name: item?.data?.name,
       }));
       const contentMessageAttachPPTX = responseFilePPTX?.map((item: any) => ({
-        url: item?.data?.url,
+        url: item?.data?.secure_url,
         size: item?.data?.bytes,
         name: item?.data?.name,
       }));
       const contentMessageAttachXLSX = responseFileXLSX?.map((item: any) => ({
-        url: item?.data?.url,
+        url: item?.data?.secure_url,
         size: item?.data?.bytes,
         name: item?.data?.name,
       }));
