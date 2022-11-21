@@ -30,9 +30,9 @@ function Register() {
   return (
     <div className={Styles.main}>
       {" "}
-      <div className={`${Styles.headerTitle} mt-40`}>Zalo</div>
+      <div className={`${Styles.headerTitle} mt-40`}>CusCare</div>
       <div className={`${Styles.title} mb-20`}>
-        Đăng ký tài khoản Zalo trên Web
+        Đăng ký tài khoản chăm sóc khách hàng
       </div>
       <div className={`${Styles.form}`}>
         <form onSubmit={formik.handleSubmit}>
