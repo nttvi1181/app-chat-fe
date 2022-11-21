@@ -208,10 +208,10 @@ const InputChat = (props: Props) => {
       }));
 
       const contentMessageImage = responseFileImage?.map(
-        (item: any) => item?.data?.url
+        (item: any) => item?.data?.secure_url
       );
       const contentMessageVideo = responseFileVideo?.map(
-        (item: any) => item?.data?.url
+        (item: any) => item?.data?.secure_url
       );
 
       //
