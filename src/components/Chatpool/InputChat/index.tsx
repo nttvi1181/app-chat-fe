@@ -4,7 +4,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Col, Input, message, Row, Upload } from "antd";
+import { Col, Input, Menu, message, Popover, Row, Upload } from "antd";
 import { BsEmojiSmile, BsImage } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
 import { GrAttachment } from "react-icons/gr";
@@ -15,7 +15,11 @@ import useProfile from "@/hooks/useProfile";
 import styled from "styled-components";
 import { RiCloseCircleFill, RiCloseFill } from "react-icons/ri";
 import { RcFile } from "antd/lib/upload";
-import { AiFillCloseCircle, AiOutlinePlus } from "react-icons/ai";
+import {
+  AiFillCloseCircle,
+  AiOutlineMenu,
+  AiOutlinePlus,
+} from "react-icons/ai";
 import { MediaService } from "@/services/MediaService";
 import useUi from "@/hooks/useUi";
 import { getThumbailVideo, toBase64 } from "@/utils/helper";
@@ -29,6 +33,7 @@ import {
   ATTACH_FILE_PPTX,
   ATTACH_FILE_XLSX,
   LIST_ATTACH_FILE_TYPE,
+  USER_ID_ADMIN,
 } from "@/constant";
 const { TextArea } = Input;
 type Props = {};
@@ -369,6 +374,26 @@ const InputChat = (props: Props) => {
     setValueText("");
     scrollToBottom();
   };
+
+  const handleSendMessageSupport = async (content: string) => {
+    const data = {
+      message_id: new Date().getTime().toString(),
+      content: content,
+      conversation_id: conversation_info.conversation_id,
+      sender_id: currentUser?._id,
+      recive_id: conversation_info.conversation_members,
+      type: "TEXT",
+      is_check_conversation: !Object.values(list_messages).length,
+      member_seens: [currentUser?._id],
+      send_time: new Date().getTime(),
+      message_reply,
+    };
+    pushNewMessage(data);
+    sendNewMessage(data);
+    handleRemoveReplyMessage();
+    setValueText("");
+    scrollToBottom();
+  };
   const scrollToBottom = () => {
     const objDiv = document.getElementById("scrollableDiv") as HTMLElement;
     if (objDiv) {
@@ -385,6 +410,63 @@ const InputChat = (props: Props) => {
     newFiles.splice(index, 1);
     setFilesInput(newFiles);
   };
+
+  const items = [
+    {
+      label: "Sản phẩm",
+      key: "1",
+      children: [
+        { label: "Tư vấn sản phẩm", key: "1.1" },
+        { label: "Đổi trả sản phẩm", key: "1.2" },
+      ],
+    },
+    {
+      label: "Thanh toán",
+      key: "2",
+      children: [
+        { label: "Thanh toán thẻ tín dụng - thẻ ghi nợ", key: "2.1" },
+        { label: "Internet banking", key: "2.2" },
+        { label: "Thanh toán khi nhận hàng", key: "2.3" },
+        { label: "Trả góp", key: "2.4" },
+      ],
+    },
+    {
+      label: "Bảo hành",
+      key: "3",
+      children: [
+        { label: "Tra cứu thông tin bảo hành", key: "3.1" },
+        { label: "Chính sách bảo hành", key: "3.2" },
+      ],
+    },
+    {
+      label: "Góp ý khiếu nại",
+      key: "4",
+      children: [
+        { label: "Tư vấn", key: "4.1" },
+        { label: "Khiếu nại - phản ánh", key: "4.2" },
+        { label: "Góp ý cải thiện", key: "4.3" },
+      ],
+    },
+    {
+      label: "Thông tin liên hệ",
+      key: "5",
+      children: [
+        { label: "Hotline", key: "5.1" },
+        { label: "Email", key: "5.2" },
+        { label: "Địa chỉ", key: "5.3" },
+      ],
+    },
+  ];
+  const contentSupport = (
+    <Menu
+      mode="inline"
+      style={{ width: 256 }}
+      items={items}
+      onClick={(e: any) => {
+        handleSendMessageSupport(e.domEvent.target.textContent);
+      }}
+    />
+  );
 
   return (
     <Row className="relative">
@@ -523,6 +605,18 @@ const InputChat = (props: Props) => {
                   onClick={handleSendMessage}
                 />
               </Col>
+              {conversation_info.conversation_members.includes(USER_ID_ADMIN) &&
+                currentUser?._id !== USER_ID_ADMIN && (
+                  <Col>
+                    <Popover
+                      content={contentSupport}
+                      trigger="click"
+                      placement="topRight"
+                    >
+                      <AiOutlineMenu className="cursor-pointer" />
+                    </Popover>
+                  </Col>
+                )}
             </Row>
             {isOpenEmoji && (
               <ClickOutside onClickOutside={() => setIsOpenEmoji(false)}>
