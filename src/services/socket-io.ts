@@ -1,6 +1,6 @@
 import * as io from "socket.io-client";
 // const baseURL = "http://192.168.0.100:8080";
-const baseURL = "https://api-app-chat-services.onrender.com/";
+const baseURL = "chat-api.chatweb.shop";
 
 const connectSocket = () => {
   if (window.socket) {
