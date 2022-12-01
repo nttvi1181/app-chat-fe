@@ -2,7 +2,7 @@ import axios from "axios";
 import { disconnectSocket } from "./socket-io";
 // const baseURL = "https://api-app-chat-be.herokuapp.com/api/v1";
 // const baseURL = "http://10.0.19.66:8080/api/v1";
-const baseURL = process.env.REACT_APP_BASE_URL || "chat-api.blockchaininfo.tech";
+const baseURL = process.env.REACT_APP_BASE_URL || "chat-api.chatweb.shop";
 
 const http = axios.create({
   method: "post", // default
